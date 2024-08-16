@@ -9,5 +9,7 @@ export class TerminusLoggerService extends ConsoleLogger {
     stack?: unknown,
     context?: unknown,
     ...rest: unknown[]
-  ): void {}
+  ): void {
+    super.error(message, stack, context, ...rest);
+  }
 }
