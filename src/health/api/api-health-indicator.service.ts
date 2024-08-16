@@ -5,6 +5,9 @@ import {
   HealthIndicatorResult,
 } from '@nestjs/terminus';
 
+export const _API_HEALTH_INDICATOR = 'api';
+export const _API_HEALTH_INDICATOR_MESSAGE = 'API is not healthy';
+
 @Injectable()
 export class ApiHealthIndicatorService extends HealthIndicator {
   async isHealthy(key: string): Promise<HealthIndicatorResult> {
@@ -13,7 +16,7 @@ export class ApiHealthIndicatorService extends HealthIndicator {
     const result = this.getStatus(key, isHealthy, { uptime });
 
     if (!isHealthy) {
-      throw new HealthCheckError('API is not healthy', result);
+      throw new HealthCheckError(_API_HEALTH_INDICATOR_MESSAGE, result);
     }
 
     return result;

@@ -1,7 +1,5 @@
 import {
   Controller,
-  HttpException,
-  HttpStatus,
   Post,
   UploadedFile,
   UseInterceptors,
@@ -19,7 +17,7 @@ export class FileUploadController {
   async uploadFile(
     @UploadedFile() file: Express.Multer.File,
   ): Promise<ResultCsvFileStructures> {
-    throw new HttpException('TIME OUTTTTT', HttpStatus.REQUEST_TIMEOUT);
+    // throw new HttpException('TIME OUTTTTT', HttpStatus.REQUEST_TIMEOUT);
     return this.fileParserService.csv(file);
   }
 }

@@ -4,7 +4,10 @@ import {
   HealthCheckResult,
   HealthCheckService,
 } from '@nestjs/terminus';
-import { ApiHealthIndicatorService } from './api/api-health-indicator.service';
+import {
+  _API_HEALTH_INDICATOR,
+  ApiHealthIndicatorService,
+} from './api/api-health-indicator.service';
 
 @Controller('health')
 export class HealthController {
@@ -17,7 +20,8 @@ export class HealthController {
   @HealthCheck()
   async checkApi(): Promise<HealthCheckResult> {
     return this.healthCheckService.check([
-      async () => this.apiHealthIndicatorService.isHealthy('api'),
+      async () =>
+        this.apiHealthIndicatorService.isHealthy(_API_HEALTH_INDICATOR),
     ]);
   }
 }
