@@ -31,6 +31,9 @@ export class FileParserService {
     });
 
     this.logger.info('CSV file parsed successfully');
+
+    this.isValueRepeated(resultGetFromFile, 'studios');
+
     return resultGetFromFile;
   }
 
@@ -69,5 +72,36 @@ export class FileParserService {
       producers: '',
       winner: 'no',
     };
+  }
+
+  isValueRepeated(
+    resultCsvFileStructures: ResultCsvFileStructures,
+    keyToFind: keyof ResultCsvFileStructure,
+  ): boolean {
+    const times = new Map<string, number>();
+
+    resultCsvFileStructures.forEach((value) => {
+      const nameToFind = String(value[keyToFind]);
+
+      if (nameToFind) {
+        if (times.has(nameToFind)) {
+          console.log('nameToFind', nameToFind);
+          times.set(nameToFind, times.get(nameToFind)! + 1);
+        } else {
+          times.set(nameToFind, 1);
+        }
+      }
+    });
+
+    let hasMore = false;
+
+    times.forEach((count) => {
+      if (count > 1) {
+        hasMore = true;
+      }
+    });
+
+    console.log(`The key "${keyToFind}" has more than one value: ${hasMore}`);
+    return hasMore;
   }
 }
