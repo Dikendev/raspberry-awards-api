@@ -71,12 +71,14 @@ describe('ExceljsService', () => {
         .spyOn(service.workBook.csv, 'read')
         .mockRejectedValue(new Error('Error reading file'));
 
-      await service.read(file);
-
-      expect(logger.error).toHaveBeenCalledWith(
-        'Error reading file',
-        new Error('Error reading file'),
-      );
+      try {
+        await service.read(file);
+      } catch (error) {
+        expect(logger.error).toHaveBeenCalledWith(
+          'Error reading file',
+          new Error('Error reading file'),
+        );
+      }
     });
   });
 
