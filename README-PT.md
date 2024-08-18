@@ -338,7 +338,7 @@ CLS (Continuation-Local Storage) é usado para manter o contexto em chamadas ass
 
 <div align="center">
 
-### Database Modeling
+### Modalagem Banco de dados
 
 <img width="700" alt="GIF" align="center" src="./src/public/database_relations.png">
 
