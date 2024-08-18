@@ -1,8 +1,8 @@
 <a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
 
-Languages: <a href="/README_PT.md" target="_blank">PT_BR: 🇧🇷</a>
+Languages: <a href="/README-PT.md" target="_blank">PT_BR: 🇧🇷</a>
 
-# A Scheduling and Management Solution for Business Events
+# Raspberry Awards Application
 
 Develop a web application with a RESTful API to enable reading the list of nominees and winners of the Worst Picture category of the Golden Raspberry Awards, using React for the frontend, Node.js for the backend, and MongoDB as the database.
 
@@ -149,7 +149,7 @@ docker-compose logs -f
 
 ## Database Modeling
 
-## LOG
+## LOG Service (Monitoring)
 
 ### Morgan
 
@@ -187,85 +187,139 @@ CLS (Continuation-Local Storage) is used to maintain context across asynchronous
 
 ## Routes
 
-### 1. Producers
+### 1. Api Health
 
-- GET /producers
+- GET /api/health
+  - Description: Check the health status of the API.
+  - Response: Returns the health status of the API.
+
+### 2. Producers
+
+- POST /api/producers
+
+  - Description: Create a new producer.
+  - Request Body: JSON object containing the producer details.
+  - Response: Returns the created producer object.
+
+- GET /api/producers
+
   - Description: Retrieve a list of all producers.
   - Response: Returns an array of producer objects.
-- POST /producers
-  - Description: Create a new producer.
-  - Request Body: JSON object containing producer details (e.g., name).
-  - Response: Returns the newly created producer object.
-- GET /producers/
-  - Description: Retrieve details of a specific producer by ID.
-  - Response: Returns a producer object with the specified ID.
-- PATCH /producers/
-  - Description: Update details of a specific producer by ID.
-  - Request Body: JSON object containing updated producer details.
-    Response: Returns the updated producer object.
-- DELETE /producers/
-  - Description: Delete a specific producer by ID.
-  - Response: Returns a confirmation message or error if the producer does not exist. 2.
 
-### 2. Studios
+- GET /api/producers/{id}
 
-- GET /studios
+  - Description: Retrieve a producer by ID.
+  - Response: Returns the producer object with the specified ID.
+
+- PATCH /api/producers/{id}
+
+  - Description: Update a producer by ID.
+  - Request Body: JSON object containing the updated producer details.
+  - Response: Returns the updated producer object.
+
+- DELETE /api/producers/{id}
+  - Description: Delete a producer by ID.
+  - Response: Returns a confirmation message.
+
+### 3. Studios
+
+- POST /api/studio
+
+  - Description: Create a new studio.
+  - Request Body: JSON object containing the studio details.
+  - Response: Returns the created studio object.
+
+- GET /api/studio
+
   - Description: Retrieve a list of all studios.
   - Response: Returns an array of studio objects.
-- POST /studios
-  - Description: Create a new studio.
-  - Request Body: JSON object containing studio details (e.g., name).
-  - Response: Returns the newly created studio object.
-- GET /studios/
-  - Description: Retrieve details of a specific studio by ID.
-  - Response: Returns a studio object with the specified ID.
-- PATCH /studios/
-  - Description: Update details of a specific studio by ID.
-  - Request Body: JSON object containing updated studio details.
+
+- GET /api/studio/{id}
+
+  - Description: Retrieve a studio by ID.
+  - Response: Returns the studio object with the specified ID.
+
+- PATCH /api/studio/{id}
+
+  - Description: Update a studio by ID.
+  - Request Body: JSON object containing the updated studio details.
   - Response: Returns the updated studio object.
-- DELETE /studios/
-  - Description: Delete a specific studio by ID.
-  - Response: Returns a confirmation message or error if the studio does not exist.
 
-### 3. Movies
+- DELETE /api/studio/{id}
+  - Description: Delete a studio by ID.
+  - Response: Returns a confirmation message.
 
-- GET /movies
+### 4. Movies
+
+- POST /api/movie
+
+  - Description: Create a new movie.
+  - Request Body: JSON object containing the movie details.
+  - Response: Returns the created movie object.
+
+- GET /api/movie
+
   - Description: Retrieve a list of all movies.
   - Response: Returns an array of movie objects.
-- POST /movies
-  - Description: Create a new movie.
-  - Request Body: JSON object containing movie details (e.g., title, year, studioId, producerId).
-  - Response: Returns the newly created movie object.
-- GET /movies/
-  - Description: Retrieve details of a specific movie by ID.
-  - Response: Returns a movie object with the specified ID.
-- PATCH /movies/
-  - Description: Update details of a specific movie by ID.
-  - Request Body: JSON object containing updated movie details.
+
+- GET /api/movie/{id}
+
+  - Description: Retrieve a movie by ID.
+  - Response: Returns the movie object with the specified ID.
+
+- PATCH /api/movie/{id}
+
+  - Description: Update a movie by ID.
+  - Request Body: JSON object containing the updated movie details.
   - Response: Returns the updated movie object.
-- DELETE /movies/
-  - Description: Delete a specific movie by ID.
-  - Response: Returns a confirmation message or error if the movie does not exist.
 
-### 3. Analytics
+- DELETE /api/movie/{id}
+  - Description: Delete a movie by ID.
+  - Response: Returns a confirmation message.
 
-- GET /analytics/largest-gap
+### 5. Analytics
 
-  - Description: Retrieve the producer with the largest gap between wins.
-  - Response: Returns an object containing the producer with the largest gap between wins.
+- GET /api/analytics/fastest-wins
 
-- GET /analytics/fastest-wins
+  - Description: Retrieve the fastest wins analytics.
+  - Response: Returns the analytics data.
 
-  - Description: Retrieve the producer with the fastest consecutive wins.
-  - Response: Returns an object containing the producer with the fastest consecutive wins.
+- GET /api/analytics/largest-gap
 
-- GET /analytics/movie-counts
-  - Description: Retrieve the count of movies for each producer.
-  - Response: Returns an array of objects, each containing a producer and their respective movie count.
+  - Description: Retrieve the largest gap wins analytics.
+  - Response: Return the analytics data.
+
+- GET /api/analytics/movie-counts
+  - Description: Retrieve the movie counts analytics.
+  - Response: Returns the analytics data.
+
+### 6. Upload Files
+
+- POST /api/upload-file/csv
+  - Description: Upload a CSV file.
+  - Request Body: Form-data containing the CSV file.
+  - Response: Returns a confirmation message.
+
+### 7. Database Wipe
+
+- DELETE /api/wipe
+  - Description: Wipe the entire database.
+  - Response: Returns a confirmation message.
 
 ## Demonstration Images
 
-Documentation in development....
+<div align="center">
+
+### Database Modeling
+
+<img width="700" alt="GIF" align="center" src="./src/public/database_relations.png">
+
+### Branch Workflow
+
+<img width="700" alt="GIF" align="center" src="./src/public/branch_flow.png">
+
+<div align="start">
+<br/>
 
 ## Conclusion
 
