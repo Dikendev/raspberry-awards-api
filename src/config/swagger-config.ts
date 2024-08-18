@@ -5,8 +5,6 @@ import {
   SwaggerModule,
 } from '@nestjs/swagger';
 
-// http://localhost:3000/api/sw
-
 export const swaggerConfigs = (app: INestApplication) => {
   const swagger_url = 'api/sw';
 
@@ -14,7 +12,7 @@ export const swaggerConfigs = (app: INestApplication) => {
     .setTitle('Raspberry API')
     .setDescription('Raspberry API Application')
     .setVersion('1.0')
-    .addTag('batata')
+    .addTag('Application that show the Raspberry Awards winners')
     .build();
 
   const customOptions: SwaggerCustomOptions = {

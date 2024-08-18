@@ -7,10 +7,15 @@ import { ProducersService } from '../producer/producers.service';
 import { StudioService } from '../studio/studio.service';
 import { NotFoundException } from '../../../../infrastructure/exceptions/filter/app/not-found.exception';
 import { UpdateMovieDto, UpdateMovieSchema } from './dtos/update-movie.dto';
+import {
+  Logger,
+  LoggerKey,
+} from '../../../../external/logger/domain/logger.repository';
 
 @Injectable()
 export class MovieService {
   constructor(
+    @Inject(LoggerKey) private logger: Logger,
     @InjectModel(Movie.name) private movieModel: Model<MovieDocument>,
     @Inject(forwardRef(() => ProducersService))
     private readonly producerService: ProducersService,
@@ -50,6 +55,7 @@ export class MovieService {
         $addToSet: { movies: existingMovie._id },
       });
 
+      this.logger.info(`Movie updated with ID: ${existingMovie._id}`);
       return existingMovie;
     }
 
@@ -69,6 +75,7 @@ export class MovieService {
       $addToSet: { movies: savedMovie._id },
     });
 
+    this.logger.info(`Movie created with ID: ${newMovie._id}`);
     return savedMovie;
   }
 
@@ -95,15 +102,13 @@ export class MovieService {
 
     const skip = (page - 1) * limit;
 
-    const data = await this.movieModel
+    return this.movieModel
       .find()
       .populate('studio')
       .populate('producer')
       .skip(skip)
       .limit(limit)
       .exec();
-
-    return data;
   }
 
   async updateMovie(

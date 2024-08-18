@@ -6,8 +6,10 @@ import { Winner } from '../../../../services/file-parser/interfaces/csv.interfac
 
 export type MovieDocument = Movie & Document<Types.ObjectId>;
 
-@Schema({ collection: 'movies' })
+@Schema({ timestamps: true, collection: 'movies' })
 export class Movie {
+  _id: Types.ObjectId;
+
   @Prop({ required: true, type: String, unique: true })
   title: string;
 
