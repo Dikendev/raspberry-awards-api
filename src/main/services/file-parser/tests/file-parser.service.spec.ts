@@ -1,112 +1,190 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
+import * as ExcelJS from 'exceljs';
+import { ParserRepository } from '../../../../external/excel-js/repository/parser-repository';
 import { FileParserService } from '../file-parser.service';
 import {
   Logger,
   LoggerKey,
 } from '../../../../external/logger/domain/logger.repository';
-import { ParserRepository } from '../../../../external/excel-js/repository/parser-repository';
-import * as ExcelJS from 'exceljs';
+import { PopulateDatabaseService } from '../../../use-cases/when-file-is-readed/populate-database/populate-database.service';
+import { ResultCsvFileStructures } from '../interfaces/csv.interface';
 
 describe('FileParserService', () => {
   let service: FileParserService;
-  let logger: Logger;
   let parserRepository: ParserRepository;
+  let logger: Logger;
+  let populateDatabaseService: PopulateDatabaseService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         FileParserService,
-        { provide: LoggerKey, useValue: { info: jest.fn(), error: jest.fn() } },
-        { provide: ParserRepository, useValue: { read: jest.fn() } },
+        {
+          provide: ParserRepository,
+          useValue: {
+            readLocal: jest.fn(),
+            read: jest.fn(),
+          },
+        },
+        {
+          provide: LoggerKey,
+          useValue: {
+            debug: jest.fn(),
+            info: jest.fn(),
+          },
+        },
+        {
+          provide: PopulateDatabaseService,
+          useValue: {
+            hasData: jest.fn(),
+            populateDataBase: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
     service = module.get<FileParserService>(FileParserService);
-    logger = module.get<Logger>(LoggerKey);
     parserRepository = module.get<ParserRepository>(ParserRepository);
+    logger = module.get<Logger>(LoggerKey);
+    populateDatabaseService = module.get<PopulateDatabaseService>(
+      PopulateDatabaseService,
+    );
   });
 
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
 
-  it('should logger be defined', () => {
-    expect(logger).toBeDefined();
-  });
+  describe('onModuleInit', () => {
+    it('should call csvLocal if no data exists in the database', async () => {
+      jest.spyOn(populateDatabaseService, 'hasData').mockResolvedValue(false);
+      const csvLocalSpy = jest.spyOn(service, 'csvLocal').mockResolvedValue([]);
 
-  it('should parserRepository be defined', () => {
-    expect(parserRepository).toBeDefined();
-  });
+      await service.onModuleInit();
 
-  describe('handleCell', () => {
-    it('should parse a row with valid data correctly', () => {
-      const mockRow = {
-        eachCell: (callback: (cell: any, colNumber: number) => void) => {
-          callback({ value: 2024 }, 1);
-          callback({ value: "Can't Stop the Music" }, 2);
-          callback({ value: 'Associated Film Distribution' }, 3);
-          callback({ value: 'Allan Carr' }, 4);
-          callback({ value: 'yes' }, 5);
-        },
-      } as ExcelJS.Row;
-
-      const result = service.handleCell(mockRow);
-
-      expect(result.year).toBe(2024);
-      expect(result.title).toBe("Can't Stop the Music");
-      expect(result.studios).toBe('Associated Film Distribution');
-      expect(result.producers).toBe('Allan Carr');
-      expect(result.winner).toBe('yes');
+      expect(populateDatabaseService.hasData).toHaveBeenCalled();
+      expect(csvLocalSpy).toHaveBeenCalled();
     });
 
-    it('should handle invalid column numbers gracefully', () => {
-      const mockRow = {
-        eachCell: (callback: (cell: any, colNumber: number) => void) => {
-          callback({ value: 2024 }, 6);
-        },
-      } as ExcelJS.Row;
+    it('should not call csvLocal if data exists in the database', async () => {
+      jest.spyOn(populateDatabaseService, 'hasData').mockResolvedValue(true);
+      const csvLocalSpy = jest.spyOn(service, 'csvLocal').mockResolvedValue([]);
 
-      const result = service.handleCell(mockRow);
+      await service.onModuleInit();
 
-      expect(result.year).toBeUndefined();
-      expect(result.title).toBe('');
-      expect(result.studios).toBe('');
-      expect(result.producers).toBe('');
-      expect(result.winner).toBe('no');
-    });
-
-    it('should handle missing values gracefully', () => {
-      const mockRow = {
-        eachCell: (callback: (cell: any, colNumber: number) => void) => {
-          callback({ value: null }, 1);
-          callback({ value: null }, 2);
-          callback({ value: null }, 3);
-          callback({ value: null }, 4);
-          callback({ value: null }, 5);
-        },
-      } as ExcelJS.Row;
-
-      const result = service.handleCell(mockRow);
-
-      expect(result.year).toBe(0);
-      expect(result.title).toBe('null');
-      expect(result.studios).toBe('null');
-      expect(result.producers).toBe('null');
-      expect(result.winner).toBe('null');
+      expect(populateDatabaseService.hasData).toHaveBeenCalled();
+      expect(csvLocalSpy).not.toHaveBeenCalled();
+      expect(logger.debug).toHaveBeenCalledWith(
+        'Data already exists in the database. Skipping CSV parsing.',
+      );
     });
   });
 
-  describe('initEmptyCsvFile', () => {
-    it('should return an empty csv file structure', () => {
-      const result = service.initEmptyCsvFile();
-      const expected = {
-        year: undefined,
-        title: '',
-        studios: '',
-        producers: '',
+  describe('csvLocal', () => {
+    it('should read local file and process it', async () => {
+      const mockWorkbook = new ExcelJS.Workbook();
+      jest.spyOn(parserRepository, 'readLocal').mockResolvedValue(mockWorkbook);
+      const readFileSpy = jest.spyOn(service, 'readFile').mockResolvedValue([]);
+
+      await service.csvLocal();
+
+      expect(parserRepository.readLocal).toHaveBeenCalled();
+      expect(readFileSpy).toHaveBeenCalledWith(mockWorkbook);
+    });
+  });
+
+  describe('csv', () => {
+    it('should read uploaded file and process it', async () => {
+      const mockFile = {} as Express.Multer.File;
+      const mockWorkbook = new ExcelJS.Workbook();
+      jest.spyOn(parserRepository, 'read').mockResolvedValue(mockWorkbook);
+      const readFileSpy = jest.spyOn(service, 'readFile').mockResolvedValue([]);
+
+      await service.csv(mockFile);
+
+      expect(parserRepository.read).toHaveBeenCalledWith(mockFile);
+      expect(readFileSpy).toHaveBeenCalledWith(mockWorkbook);
+    });
+  });
+
+  describe('readFile', () => {
+    it('should process the workbook and populate the database', async () => {
+      const mockWorkbook = new ExcelJS.Workbook();
+      const mockWorksheet = mockWorkbook.addWorksheet('Sheet1');
+      mockWorksheet.addRow(['Year', 'Title', 'Studios', 'Producers', 'Winner']);
+      mockWorksheet.addRow([2021, 'Title1', 'Studio1', 'Producer1', 'yes']);
+      mockWorksheet.addRow([2022, 'Title2', 'Studio2', 'Producer2', 'no']);
+
+      const result = await service.readFile(mockWorkbook);
+
+      expect(result).toHaveLength(2);
+      expect(result[0]).toEqual({
+        year: 2021,
+        title: 'Title1',
+        studios: 'Studio1',
+        producers: 'Producer1',
+        winner: 'yes',
+      });
+      expect(result[1]).toEqual({
+        year: 2022,
+        title: 'Title2',
+        studios: 'Studio2',
+        producers: 'Producer2',
         winner: 'no',
-      };
-      expect(result).toEqual(expected);
+      });
+      expect(logger.debug).toHaveBeenCalledWith('CSV file parsed successfully');
+      expect(populateDatabaseService.populateDataBase).toHaveBeenCalledWith(
+        result,
+      );
+    });
+  });
+
+  describe('isValueRepeated', () => {
+    it('should return true if a value is repeated', () => {
+      const data: ResultCsvFileStructures = [
+        {
+          year: 2021,
+          title: 'Title1',
+          studios: 'Studio1',
+          producers: 'Producer1',
+          winner: 'yes',
+        },
+        {
+          year: 2022,
+          title: 'Title2',
+          studios: 'Studio1',
+          producers: 'Producer2',
+          winner: 'no',
+        },
+      ];
+
+      const result = service.isValueRepeated(data, 'studios');
+
+      expect(result).toBe(true);
+    });
+
+    it('should return false if no value is repeated', () => {
+      const data: ResultCsvFileStructures = [
+        {
+          year: 2021,
+          title: 'Title1',
+          studios: 'Studio1',
+          producers: 'Producer1',
+          winner: 'yes',
+        },
+        {
+          year: 2022,
+          title: 'Title2',
+          studios: 'Studio2',
+          producers: 'Producer2',
+          winner: 'no',
+        },
+      ];
+
+      const result = service.isValueRepeated(data, 'studios');
+
+      expect(result).toBe(false);
     });
   });
 });
