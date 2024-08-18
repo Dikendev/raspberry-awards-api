@@ -7,7 +7,7 @@ import {
   Logger,
   LoggerKey,
 } from '../../../../external/logger/domain/logger.repository';
-import { PopulateDatabaseService } from '../../../use-cases/when-file-is-readed/populate-database/populate-database.service';
+import { PopulateDatabaseService } from '../../../use-cases/when-file-is-loaded/populate-database.service';
 import { ResultCsvFileStructures } from '../interfaces/csv.interface';
 
 describe('FileParserService', () => {
