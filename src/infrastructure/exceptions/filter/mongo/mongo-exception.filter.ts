@@ -6,8 +6,9 @@ import {
 } from '@nestjs/common';
 import { Response } from 'express';
 import { MongoError } from 'mongodb';
+import { MongooseError } from 'mongoose';
 
-@Catch(MongoError)
+@Catch(MongoError, MongooseError)
 export class MongoExceptionFilter<T> implements ExceptionFilter {
   catch(exception: T, host: ArgumentsHost) {
     const context = host.switchToHttp();
@@ -24,6 +25,11 @@ export class MongoExceptionFilter<T> implements ExceptionFilter {
         status = HttpStatus.BAD_REQUEST;
         message = exception.message;
       }
+    }
+
+    if (exception instanceof MongooseError) {
+      status = HttpStatus.BAD_REQUEST;
+      message = exception.message;
     }
 
     response.status(status).json({

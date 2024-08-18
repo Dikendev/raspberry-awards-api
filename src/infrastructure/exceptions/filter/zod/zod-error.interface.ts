@@ -1,5 +1,5 @@
 export interface MinimalError {
-  path: PathError;
+  param: PathError;
   message: string;
 }
 

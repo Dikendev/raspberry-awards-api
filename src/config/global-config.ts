@@ -2,8 +2,8 @@ import { INestApplication } from '@nestjs/common';
 import { LoggerAdapterService } from '../external/logger/infrastructure/logger-adapter.service';
 import { HttpExceptionFilter } from '../infrastructure/exceptions/filter/app/http-exception.filter';
 import { Logger } from '@nestjs/common';
-import { ZodFilter } from '../infrastructure/exceptions/filter/zod/zod.filter';
 import { MongoExceptionFilter } from '../infrastructure/exceptions/filter/mongo/mongo-exception.filter';
+import { ZodFilter } from '../infrastructure/exceptions/filter/zod/zod.filter';
 
 export async function globalConfig(app: INestApplication): Promise<void> {
   const logger = new Logger('NestApplication');
@@ -14,17 +14,16 @@ export async function globalConfig(app: INestApplication): Promise<void> {
   app.useLogger(app.get(LoggerAdapterService));
   app.enableShutdownHooks();
   app.enableCors();
-
+  app.setGlobalPrefix('api');
   shutDown(app, logger);
-
   await serverListen(app, logger);
 }
 
 export function globalFilters(app: INestApplication) {
   app.useGlobalFilters(
     new HttpExceptionFilter(),
-    new ZodFilter(),
     new MongoExceptionFilter(),
+    new ZodFilter(),
   );
 }
 
