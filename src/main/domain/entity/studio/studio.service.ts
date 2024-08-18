@@ -80,6 +80,7 @@ export class StudioService {
       if (!isValidObjectId) {
         throw new NotFoundException(`Id not valid ${producerId}`);
       }
+
       const producer = await this.producerService.findById(producerId);
 
       if (!producer) return;
