@@ -7,8 +7,9 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ResultCsvFileStructures } from '../services/file-parser/interfaces/csv.interface';
-import { PopulateDatabaseService } from '../use-cases/when-file-is-loaded/populate-database.service';
+import { PopulateDatabaseService } from '../services/populate-database/populate-database.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiSwagger } from '../../decorators/swagger.decorator';
 
 @ApiTags('Upload File')
 @Controller('upload-file')
@@ -17,12 +18,7 @@ export class FileUploadController {
     private readonly populateDatabaseService: PopulateDatabaseService,
   ) {}
 
-  @ApiTags('Upload File')
-  @ApiOperation({
-    summary: 'Create a new studio',
-    description:
-      'Create a new Movie with the provided data. Returns the created Movie.',
-  })
+  @ApiSwagger('Upload File', 'Upload a CSV file', 'Upload a CSV file.')
   @Post('csv')
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(
@@ -31,12 +27,11 @@ export class FileUploadController {
     return this.populateDatabaseService.csv(file);
   }
 
-  @ApiTags('Upload File')
-  @ApiOperation({
-    summary: 'Create a new movire',
-    description:
-      'Create a new movie with the provided data. Returns the created movie.',
-  })
+  @ApiSwagger(
+    'Upload File',
+    'Find for a csv at public folder',
+    'The csv file is at public folder.',
+  )
   @Get('csv-local')
   async getCsvLocal(): Promise<ResultCsvFileStructures> {
     return await this.populateDatabaseService.csvLocal();

@@ -13,19 +13,19 @@ import { CreateStudioDto, CreateStudioSchema } from './dtos/create-studio.dto';
 import { objectIdSchema } from '../../../../utils/validate-mongo-id';
 import { UpdateStudioDto, UpdateStudioSchema } from './dtos/update-studio.dto';
 import { Studio } from './schemas/studio.schema';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
+import { ApiSwagger } from '../../../../decorators/swagger.decorator';
 
 @ApiTags('Studios')
 @Controller('studio')
 export class StudioController {
   constructor(private readonly studioService: StudioService) {}
 
-  @ApiTags('Studios')
-  @ApiOperation({
-    summary: 'Create a new studio',
-    description:
-      'Create a new studio with the provided data. Returns the created studio.',
-  })
+  @ApiSwagger(
+    'Studios',
+    'Create a new studio',
+    'Create a new studio with the provided data. Returns the created studio.',
+  )
   @Post()
   async create(
     @Body(new ZodPipe(CreateStudioSchema)) createStudioDto: CreateStudioDto,
@@ -33,21 +33,21 @@ export class StudioController {
     return this.studioService.create(createStudioDto);
   }
 
-  @ApiTags('Studios')
-  @ApiOperation({
-    summary: 'Find all studios',
-    description: 'Find all studios. Returns an array of studios.',
-  })
+  @ApiSwagger(
+    'Studios',
+    'Find all studios',
+    'Find all studios. Returns an array of studios.',
+  )
   @Get()
   async findAll() {
     return this.studioService.findAll();
   }
 
-  @ApiTags('Studios')
-  @ApiOperation({
-    summary: 'Find a studio by id',
-    description: 'Find a studio by id. Returns the studio.',
-  })
+  @ApiSwagger(
+    'Studios',
+    'Find a studio by id',
+    'Find a studio by id. Returns the studio.',
+  )
   @Get(':id')
   async findOne(
     @Param('id', new ZodPipe(objectIdSchema)) id: string,
@@ -55,12 +55,11 @@ export class StudioController {
     return this.studioService.findById(id);
   }
 
-  @ApiTags('Studios')
-  @ApiOperation({
-    summary: 'Update a studio',
-    description:
-      'Update a studio with the provided data. Returns the updated studio.',
-  })
+  @ApiSwagger(
+    'Studios',
+    'Update a studio',
+    'Update a studio with the provided data. Returns the updated studio.',
+  )
   @Patch(':id')
   update(
     @Param('id', new ZodPipe(objectIdSchema)) id: string,
@@ -69,11 +68,11 @@ export class StudioController {
     return this.studioService.update(id, updateStudioDto);
   }
 
-  @ApiTags('Studios')
-  @ApiOperation({
-    summary: 'Delete a studio',
-    description: 'Delete a studio by id. Returns the deleted studio.',
-  })
+  @ApiSwagger(
+    'Studios',
+    'Delete a studio',
+    'Delete a studio by id. Returns the deleted studio.',
+  )
   @Delete(':id')
   delete(@Param('id', new ZodPipe(objectIdSchema)) id: string) {
     return this.studioService.delete(id);
