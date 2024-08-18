@@ -16,7 +16,7 @@ export class HealthController {
     private readonly apiHealthIndicatorService: ApiHealthIndicatorService,
   ) {}
 
-  @Get('api')
+  @Get()
   @HealthCheck()
   async checkApi(): Promise<HealthCheckResult> {
     return this.healthCheckService.check([

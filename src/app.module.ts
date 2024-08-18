@@ -1,18 +1,13 @@
 import { Logger, Module, OnModuleDestroy } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { LoggerModule } from './external/logger/infrastructure/logger.module';
 import { ContextModule } from './context/infrastructure/context.module';
 import { ConfigModule } from './config/config.module';
-import { FileParserModule } from './main/services/file-parser/file-parser.module';
 import { HttpExceptionFilter } from './infrastructure/exceptions/filter/app/http-exception.filter';
 import { HealthModule } from './health/health.module';
 import { MongooseModule } from '@nestjs/mongoose';
-import { StudioModule } from './main/domain/entity/studio/studio.module';
-import { MovieModule } from './main/domain/entity/movie/movie.module';
-import { ProducersModule } from './main/domain/entity/producer/producers.module';
-import { PopulateDatabaseModule } from './main/use-cases/populate-database.module';
+import { PopulateDatabaseModule } from './main/use-cases/when-file-is-loaded/populate-database.module';
 import { AnalyticsModule } from './main/services/analytics/analytics.module';
+import { DomainModule } from './main/domain/domain.module';
 
 @Module({
   imports: [
@@ -20,19 +15,13 @@ import { AnalyticsModule } from './main/services/analytics/analytics.module';
     ConfigModule,
     LoggerModule,
     ContextModule,
-    FileParserModule,
     HealthModule,
-    StudioModule,
-    MovieModule,
-    ProducersModule,
     PopulateDatabaseModule,
     AnalyticsModule,
+    DomainModule,
   ],
-  providers: [
-    AppService,
-    { provide: 'APP_FILTER', useClass: HttpExceptionFilter },
-  ],
-  controllers: [AppController],
+  providers: [{ provide: 'APP_FILTER', useClass: HttpExceptionFilter }],
+  controllers: [],
 })
 export class AppModule implements OnModuleDestroy {
   onModuleDestroy(): any {
