@@ -8,7 +8,9 @@ import {
   _API_HEALTH_INDICATOR,
   ApiHealthIndicatorService,
 } from './api/api-health-indicator.service';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Api Health')
 @Controller('health')
 export class HealthController {
   constructor(
@@ -16,6 +18,11 @@ export class HealthController {
     private readonly apiHealthIndicatorService: ApiHealthIndicatorService,
   ) {}
 
+  @ApiTags('Api Health')
+  @ApiOperation({
+    summary: 'Check the health of the API',
+    description: 'Check the health of the API. Returns the health of the API.',
+  })
   @Get()
   @HealthCheck()
   async checkApi(): Promise<HealthCheckResult> {

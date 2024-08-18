@@ -150,7 +150,30 @@ Para visualizar os logs dos contêineres em execução:
 docker-compose logs -f
 ```
 
-## Modelagem de Banco de Dados
+## Documentação da API
+
+### Swagger
+
+Você pode verificar o Swagger rodando na porta:
+
+```bash
+http://localhost:3000/api/sw#/
+```
+
+### Coleções do Postman
+
+### Baixar e Instalar o Postman:
+
+Coleção do Postman <a href="/src/public/raspberry-awards-api.postman_collection.json" target="_blank">**_Acessar arquivo .json_**</a>
+
+Se você ainda não tem, baixe e instale o Postman no site oficial.
+
+### Importar a Coleção do Postman:
+
+- Abra o Postman.
+- Clique no botão Importar localizado no canto superior esquerdo.
+- Selecione a aba Arquivo.
+- Clique em Escolher Arquivos e selecione o arquivo da coleção do Postman (.json) que você possui.
 
 ## Serviço de LOG (Monitoramento)
 
