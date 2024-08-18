@@ -38,7 +38,12 @@ export class PopulateDatabaseService {
     }
   }
 
-  convertToArray(input: string): string[] {
+  async hasData(): Promise<boolean> {
+    const count = await this.movieService.count();
+    return count > 0;
+  }
+
+  private convertToArray(input: string): string[] {
     return input
       .split(/,\s*|and\s+/)
       .map((item) => item.trim())

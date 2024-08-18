@@ -197,6 +197,10 @@ export class MovieService {
     return `Producer with id:${producerId} and associated movies deleted successfully`;
   }
 
+  async count() {
+    return this.movieModel.countDocuments().exec();
+  }
+
   private async handleOptionalParams(createMovieDto: CreateMovieDto) {
     let studioId = createMovieDto.studioId;
     let producerId = createMovieDto.producerId;

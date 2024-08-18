@@ -1,5 +1,6 @@
 import {
   Controller,
+  Get,
   Post,
   UploadedFile,
   UseInterceptors,
@@ -18,5 +19,11 @@ export class FileUploadController {
     @UploadedFile() file: Express.Multer.File,
   ): Promise<ResultCsvFileStructures> {
     return this.fileParserService.csv(file);
+  }
+
+  @Get('csv-local')
+  async getCsvLocal(): Promise<ResultCsvFileStructures> {
+    console.log('csv-local');
+    return await this.fileParserService.csvLocal();
   }
 }

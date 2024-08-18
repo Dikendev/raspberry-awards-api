@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ParserRepository } from '../../../external/excel-js/repository/parser-repository';
 import {
   ResultCsvFileStructure,
@@ -13,12 +13,49 @@ import {
 import { PopulateDatabaseService } from '../../use-cases/when-file-is-readed/populate-database/populate-database.service';
 
 @Injectable()
-export class FileParserService {
+export class FileParserService implements OnModuleInit {
+  async onModuleInit() {
+    const hasData = await this.populateDatabaseService.hasData();
+    if (!hasData) {
+      await this.csvLocal();
+    } else {
+      this.logger.debug(
+        'Data already exists in the database. Skipping CSV parsing.',
+      );
+    }
+  }
+
   constructor(
     @Inject(LoggerKey) private logger: Logger,
     private readonly parser: ParserRepository,
     private readonly populateDatabaseService: PopulateDatabaseService,
   ) {}
+
+  async csvLocal(): Promise<ResultCsvFileStructures> {
+    this.logger.debug('Reading file');
+    const workBook = await this.parser.readLocal();
+
+    const resultGetFromFile: ResultCsvFileStructures = [];
+
+    this.logger.debug('Starting data extraction from CSV file');
+
+    workBook.getWorksheet().eachRow((row, number) => {
+      if (row.number !== 1) {
+        const cellValues = this.handleCell(row);
+        resultGetFromFile.push(cellValues);
+      }
+    });
+
+    this.logger.debug('CSV file parsed successfully');
+
+    this.isValueRepeated(resultGetFromFile, 'studios');
+
+    await this.populateDatabaseService.populateDataBase(resultGetFromFile);
+
+    this.logger.debug('Database populated successfully');
+
+    return resultGetFromFile;
+  }
 
   async csv(file: Express.Multer.File): Promise<ResultCsvFileStructures> {
     const workBook = await this.parser.read(file);
