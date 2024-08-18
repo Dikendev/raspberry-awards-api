@@ -1,14 +1,9 @@
-import { Types } from 'mongoose';
 import { z } from 'zod';
 
-export const UpdateProducerSchema = z.object({
-  name: z.string().optional(),
-  studioId: z.instanceof(Types.ObjectId).optional(),
-  movies: z.array(z.instanceof(Types.ObjectId)).optional(),
-});
+export const UpdateProducerSchema = z
+  .object({
+    name: z.string().min(1, 'Name must be at least 1 character long'),
+  })
+  .strict();
 
 export type UpdateProducerDto = z.infer<typeof UpdateProducerSchema>;
-
-export const ObjectIdSchema = z
-  .string()
-  .regex(/^[0-9a-fA-F]{24}$/, 'Invalid ObjectId');

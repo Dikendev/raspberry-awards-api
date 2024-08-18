@@ -3,18 +3,22 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
+  Patch,
 } from '@nestjs/common';
 import { ProducersService } from './producers.service';
-import { CreateProducerDto, ProducerDtoType } from './dtos/create-producer.dto';
 import { ZodPipe } from '../../../../infrastructure/pipe/zod.pipe';
+import { objectIdSchema } from '../../../../utils/validate-mongo-id';
 import {
-  ObjectIdSchema,
+  CreateProducerDto,
+  CreateProducerSchema,
+} from './dtos/create-producer.dto';
+import {
   UpdateProducerDto,
   UpdateProducerSchema,
 } from './dtos/update-producer.dto';
+import { ProducerDocument } from './schemas/producer.schema';
 
 @Controller('producers')
 export class ProducersController {
@@ -22,7 +26,8 @@ export class ProducersController {
 
   @Post()
   async create(
-    @Body(new ZodPipe(CreateProducerDto)) createProducerDto: ProducerDtoType,
+    @Body(new ZodPipe(CreateProducerSchema))
+    createProducerDto: CreateProducerDto,
   ) {
     return this.producersService.create(createProducerDto);
   }
@@ -33,21 +38,25 @@ export class ProducersController {
   }
 
   @Get(':id')
-  async findOne(@Param('id', new ZodPipe(ObjectIdSchema)) id: string) {
-    return this.producersService.findOne(id);
+  async findById(
+    @Param('id', new ZodPipe(objectIdSchema)) id: string,
+  ): Promise<ProducerDocument> {
+    return this.producersService.findById(id);
   }
 
   @Patch(':id')
   update(
-    @Param('id', new ZodPipe(ObjectIdSchema)) id: string,
+    @Param('id', new ZodPipe(objectIdSchema)) id: string,
     @Body(new ZodPipe(UpdateProducerSchema))
     updateProducerDto: UpdateProducerDto,
-  ) {
+  ): Promise<ProducerDocument> {
     return this.producersService.update(id, updateProducerDto);
   }
 
   @Delete(':id')
-  remove(@Param('id', new ZodPipe(ObjectIdSchema)) id: string) {
-    return this.producersService.remove(id);
+  delete(
+    @Param('id', new ZodPipe(objectIdSchema)) id: string,
+  ): Promise<string> {
+    return this.producersService.delete(id);
   }
 }

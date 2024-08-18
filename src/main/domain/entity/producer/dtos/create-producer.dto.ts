@@ -1,10 +1,16 @@
-import { z } from 'zod';
-import { Types } from 'mongoose';
+// import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
 
-export const CreateProducerDto = z.object({
+// export class CreateProducerDto {
+//   @IsString()
+//   @IsNotEmpty({ message: 'Name of producer is required' })
+//   @MaxLength(255, { message: 'Name of studio can have at most 255 characters' })
+//   name: string;
+// }
+
+import { z } from 'zod';
+
+export const CreateProducerSchema = z.object({
   name: z.string().min(1),
-  studioId: z.instanceof(Types.ObjectId).optional(),
-  movies: z.array(z.instanceof(Types.ObjectId)).optional(),
 });
 
-export type ProducerDtoType = z.infer<typeof CreateProducerDto>;
+export type CreateProducerDto = z.infer<typeof CreateProducerSchema>;

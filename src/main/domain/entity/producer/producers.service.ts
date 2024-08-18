@@ -1,54 +1,145 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+  OnModuleInit,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Producer, ProducerDocument } from './schemas/producer.schema';
-import { Model } from 'mongoose';
-import { ProducerDtoType } from './dtos/create-producer.dto';
+import { Model, Types } from 'mongoose';
+import { StudioService } from '../studio/studio.service';
 import { UpdateProducerDto } from './dtos/update-producer.dto';
+import { MovieService } from '../movie/movie.service';
+import { CreateProducerDto } from './dtos/create-producer.dto';
 
 @Injectable()
-export class ProducersService {
+export class ProducersService implements OnModuleInit {
   constructor(
-    @InjectModel(Producer.name) private producerModel: Model<ProducerDocument>,
+    @InjectModel(Producer.name) private producerModel: Model<Producer>,
+    @Inject(forwardRef(() => StudioService))
+    private readonly studioService: StudioService,
+    @Inject(forwardRef(() => MovieService))
+    private readonly movieService: MovieService,
   ) {}
 
-  create(createProducerDto: ProducerDtoType): Promise<ProducerDocument> {
-    const createdProducer = new this.producerModel(createProducerDto);
-    return createdProducer.save();
+  async onModuleInit() {
+    // await this.producerModel.ensureIndexes();
+    // await this.producerModel.syncIndexes();
   }
 
-  findAll() {
-    return this.producerModel.find().exec();
-  }
+  async create(
+    createProducerDto: CreateProducerDto,
+  ): Promise<ProducerDocument> {
+    const alreadyExist = await this.findByName(createProducerDto.name);
 
-  async findOne(id: string) {
-    const producer = await this.producerModel.findById(id).exec();
-
-    if (!producer) {
-      throw new NotFoundException(`Producer with ID ${id} not found`);
+    if (!alreadyExist) {
+      return new this.producerModel(createProducerDto).save();
     }
 
-    return producer;
+    return alreadyExist;
   }
 
-  async update(id: string, updateProducerDto: UpdateProducerDto) {
-    const { name, studioId, movies } = updateProducerDto;
+  async findByName(name: string) {
+    return this.producerModel.findOne({ name }).exec();
+  }
+
+  async findAll(): Promise<ProducerDocument[]> {
+    return this.producerModel.find().populate('movies').exec();
+  }
+
+  async findManyByIds(ids: string[]): Promise<ProducerDocument[]> {
+    return this.producerModel.find({
+      _id: { $in: ids },
+    });
+  }
+
+  async findById(id: string): Promise<ProducerDocument> {
     const producer = await this.producerModel
-      .findByIdAndUpdate(id, { name, studioId, movies }, { new: true })
+      .findById(id)
+      .populate({
+        path: 'movies',
+        populate: { path: 'studio' },
+      })
       .exec();
 
     if (!producer) {
       throw new NotFoundException(`Producer with ID ${id} not found`);
     }
+    return producer;
+  }
+
+  async update(
+    id: string,
+    updateDto: UpdateProducerDto,
+  ): Promise<ProducerDocument> {
+    const { name } = updateDto;
+
+    const producer = await this.producerModel.findById(id).exec();
+    if (!producer) {
+      throw new NotFoundException(`Producer with ID ${id} not found`);
+    }
+
+    producer.name = name;
+    await producer.save();
 
     return producer;
   }
 
-  async remove(id: string) {
+  async updateStudioToProducers(
+    producersId: string[],
+    studioId: Types.ObjectId,
+  ) {
+    const producers = await this.producerModel
+      .find({
+        _id: { $in: producersId },
+      })
+      .exec();
+
+    if (!producers.length) {
+      throw new NotFoundException(`Producer with ID ${producersId} not found`);
+    }
+
+    const updatedProducer = await this.producerModel
+      .updateMany(
+        { _id: producers },
+        {
+          $push: { studios: studioId },
+        },
+      )
+      .exec();
+
+    return updatedProducer;
+  }
+
+  async delete(id: string) {
     const producer = await this.producerModel.findByIdAndDelete(id).exec();
 
     if (!producer) {
       throw new NotFoundException(`Producer with ID ${id} not found`);
     }
+
+    await this.movieService.deleteProducerRelation(id);
+
     return `Producer with id:${id} deleted successfully`;
+  }
+
+  async exists(id: string) {
+    return this.producerModel.exists({ _id: id });
+  }
+
+  async getProducerMovieCounts(): Promise<
+    { name: string; movieCount: number }[]
+  > {
+    const producers = await this.producerModel.aggregate([
+      {
+        $project: {
+          name: 1,
+          movieCount: { $size: '$movies' },
+        },
+      },
+    ]);
+
+    return producers;
   }
 }
