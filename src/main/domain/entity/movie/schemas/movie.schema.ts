@@ -1,10 +1,9 @@
-import { Types, Document } from 'mongoose';
+import mongoose, { Types, Document } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Producer } from '../../producer/schemas/producer.schema';
+import { Studio } from '../../studio/schemas/studio.schema';
 
-export enum Winner {
-  yes = 'yes',
-  no = 'no',
-}
+export type Winner = 'yes' | 'no';
 
 export type MovieDocument = Movie & Document<Types.ObjectId>;
 
@@ -16,13 +15,13 @@ export class Movie {
   @Prop({ required: true, type: Number })
   year: number;
 
-  @Prop({ type: Types.ObjectId, ref: 'Studio', required: true })
-  studioId: Types.ObjectId;
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Studio' }] })
+  studio: Studio;
 
-  @Prop({ type: Types.ObjectId, ref: 'Producer', required: true })
-  producerId: Types.ObjectId;
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Producer' }] })
+  producer: Producer;
 
-  @Prop({ type: String, required: true, enum: Winner })
+  @Prop({ type: String, required: true })
   winner: Winner;
 }
 
