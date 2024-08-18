@@ -1,11 +1,12 @@
 import { ArgumentsHost, HttpException } from '@nestjs/common';
-import { HttpExceptionFilter } from './app/http-exception.filter';
-import { Response } from 'express';
+import { Response, Request } from 'express';
+import { HttpExceptionFilter } from '../http-exception.filter';
 
 describe('HttpExceptionFilter', () => {
   let filter: HttpExceptionFilter;
   let mockArgumentsHost: ArgumentsHost;
   let mockResponse: Response;
+  let mockRequest: Request;
 
   beforeEach(() => {
     filter = new HttpExceptionFilter();
@@ -15,9 +16,14 @@ describe('HttpExceptionFilter', () => {
       json: jest.fn().mockReturnThis(),
     } as any;
 
+    mockRequest = {
+      url: '/test-url',
+    } as any;
+
     mockArgumentsHost = {
       switchToHttp: jest.fn().mockReturnThis(),
       getResponse: jest.fn().mockReturnValue(mockResponse),
+      getRequest: jest.fn().mockReturnValue(mockRequest),
     } as any;
   });
 
@@ -41,6 +47,7 @@ describe('HttpExceptionFilter', () => {
         statusCode: 400,
         message: 'Test Error',
         timestamp: expect.any(String),
+        path: '/test-url',
       });
     });
   });
