@@ -24,7 +24,7 @@ import mongoose from 'mongoose';
 @Injectable()
 export class PopulateDatabaseService implements OnModuleInit {
   async onModuleInit() {
-    // await this.populateDataBaseHandler();
+    await this.populateDataBaseHandler();
   }
   constructor(
     @Inject(LoggerKey) private logger: Logger,
@@ -71,7 +71,7 @@ export class PopulateDatabaseService implements OnModuleInit {
       await this.csvLocal();
     } else {
       this.logger.debug(
-        'Data already exists in the database. Skipping CSV parsing.',
+        'Data already exists in the database, skipping CSV parsing and database population',
       );
     }
   }
