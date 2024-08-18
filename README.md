@@ -10,21 +10,13 @@ Develop a web application with a RESTful API to enable reading the list of nomin
 
 This project uses various dependencies to manage different aspects of the application. Below is a list of the principal dependencies and development dependencies.
 
-#### @nestjs/mongoose
-
-- Integrates Mongoose with NestJS for MongoDB support.
-
-#### @nestjs/terminus
-
-- Adds health check capabilities to the application.
-
-#### bcrypt
-
-- Library for hashing passwords.
-
 #### mongoose
 
-- MongoDB object modeling tool designed to work in an asynchronous environment.
+- ORM to connect with MongoDB, an object modeling tool designed to work in an asynchronous environment.
+
+#### terminus
+
+- Adds health check capabilities to the application and database.
 
 #### winston
 
@@ -202,11 +194,6 @@ CLS (Continuation-Local Storage) is used to maintain context across asynchronous
 - **Error Handling**: Enhances error tracking by maintaining context information across async calls.
 - **Debugging**: Simplifies debugging by providing a consistent context throughout the request lifecycle.
 - **Integration**: Easily integrates with logging libraries like Winston to enhance log context.
-
-## Postman Collections
-
-- Import the Collection: You can import this collection into Postman by using the Import feature in Postman and selecting the JSON file of this collection.
-- Run Requests: Use Postman to run requests against your API endpoints, test different scenarios, and view responses.
 
 ## Routes
 

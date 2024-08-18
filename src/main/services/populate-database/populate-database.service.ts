@@ -12,7 +12,7 @@ import {
   ResultCsvFileStructure,
   ResultCsvFileStructures,
   Winner,
-} from '../../services/file-parser/interfaces/csv.interface';
+} from '../file-parser/interfaces/csv.interface';
 import { ParserRepository } from '../../../external/excel-js/repository/parser-repository';
 import * as ExcelJS from 'exceljs';
 import {
@@ -105,7 +105,7 @@ export class PopulateDatabaseService implements OnModuleInit {
     const resultGetFromFile: ResultCsvFileStructures = [];
     this.logger.debug('Starting data extraction from CSV file');
 
-    workBook.getWorksheet().eachRow((row, number) => {
+    workBook.getWorksheet().eachRow((row, _) => {
       if (row.number !== 1) {
         const cellValues = this.handleCell(row);
         resultGetFromFile.push(cellValues);
@@ -174,11 +174,12 @@ export class PopulateDatabaseService implements OnModuleInit {
     }
   }
 
-  async wipeDataBase(): Promise<void> {
+  async wipeDataBase(): Promise<string> {
     try {
       await mongoose.connect(process.env.DATABASE_URL, {});
       await mongoose.connection.db.dropDatabase();
       this.logger.info('Database wiped');
+      return `Database wiped`;
     } catch (error) {
       console.error(error);
     }

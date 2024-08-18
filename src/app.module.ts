@@ -5,9 +5,9 @@ import { ConfigModule } from './config/config.module';
 import { HttpExceptionFilter } from './infrastructure/exceptions/filter/app/http-exception.filter';
 import { HealthModule } from './health/health.module';
 import { MongooseModule } from '@nestjs/mongoose';
-import { PopulateDatabaseModule } from './main/use-cases/when-file-is-loaded/populate-database.module';
 import { AnalyticsModule } from './main/services/analytics/analytics.module';
 import { DomainModule } from './main/domain/domain.module';
+import { PopulateDatabaseModule } from './main/services/populate-database/populate-database.module';
 
 @Module({
   imports: [

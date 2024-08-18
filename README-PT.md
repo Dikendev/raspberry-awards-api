@@ -13,29 +13,21 @@ dados.
 
 Este projeto usa várias dependências para gerenciar diferentes aspectos da aplicação. Abaixo está uma lista das principais dependências e dependências de desenvolvimento.
 
-#### @nestjs/mongoose
+#### terminus
 
-- Integra o Mongoose com o NestJS para suporte ao MongoDB.
-
-#### @nestjs/terminus
-
-- Adiciona capacidades de verificação de integridade à aplicação.
-
-#### bcrypt
-
-- Biblioteca para hashing de senhas.
+- Adiciona capacidades de verificação de integridade à aplicação e banco de dados.
 
 #### mongoose
 
-- Ferramenta de modelagem de objetos MongoDB projetada para funcionar em um ambiente assíncrono.
+- ORM para conectar com o MongoDB, ferramenta de modelagem de objetos MongoDB projetada para funcionar em um ambiente assíncrono.
 
 #### winston
 
-- Uma biblioteca de logging versátil para Node.js. Estou usando para log interno do sistema
+- Uma biblioteca de logging versátil para Node.js. Estou usando para log interno do sistema.
 
 #### mongan
 
-- Uma biblioteca de logging versátil para Node.js, utilizado para saber o tempo de cada request
+- Uma biblioteca de logging versátil para Node.js, utilizado para saber o tempo de cada request.
 
 #### zod
 
@@ -43,7 +35,7 @@ Este projeto usa várias dependências para gerenciar diferentes aspectos da apl
 
 #### excelJs
 
-- Fornece uma ampla gama de recursos para criar, ler, modificar e formatar arquivos Excel.
+- Fornece uma ampla gama de recursos para criar, ler, modificar e formatar arquivos Excel e CSV.
 
 ## Começando
 
@@ -202,11 +194,6 @@ CLS (Continuation-Local Storage) é usado para manter o contexto em chamadas ass
 - **Rastreamento de Solicitações**: Associates log entries with specific requests, improving traceability.
 - **Tratamento de Erros**: Melhora o rastreamento de erros ao manter informações de contexto em chamadas assíncronas.
 - **Integração**: Integra-se facilmente com bibliotecas de logging como Winston para melhorar o contexto dos logs.
-
-## Coleções Postman
-
-- Importar a Coleção: Você pode importar esta coleção no Postman usando o recurso Importar no Postman e selecionando o arquivo JSON desta coleção.
-- Executar Solicitações: Use o Postman para executar solicitações contra seus endpoints de API, testar diferentes cenários e visualizar respostas.
 
 ## Rotas
 
