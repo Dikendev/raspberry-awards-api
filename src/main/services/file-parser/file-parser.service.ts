@@ -15,14 +15,7 @@ import { PopulateDatabaseService } from '../../use-cases/when-file-is-readed/pop
 @Injectable()
 export class FileParserService implements OnModuleInit {
   async onModuleInit() {
-    const hasData = await this.populateDatabaseService.hasData();
-    if (!hasData) {
-      await this.csvLocal();
-    } else {
-      this.logger.debug(
-        'Data already exists in the database. Skipping CSV parsing.',
-      );
-    }
+    await this.populateDataBaseHandler();
   }
 
   constructor(
@@ -34,9 +27,18 @@ export class FileParserService implements OnModuleInit {
   async csvLocal(): Promise<ResultCsvFileStructures> {
     this.logger.debug('Reading file');
     const workBook = await this.parser.readLocal();
+    return this.readFile(workBook);
+  }
+
+  async csv(file: Express.Multer.File): Promise<ResultCsvFileStructures> {
+    const workBook = await this.parser.read(file);
+    return this.readFile(workBook);
+  }
+
+  async readFile(workBook: ExcelJS.Workbook) {
+    this.logger.debug('Reading file');
 
     const resultGetFromFile: ResultCsvFileStructures = [];
-
     this.logger.debug('Starting data extraction from CSV file');
 
     workBook.getWorksheet().eachRow((row, number) => {
@@ -53,27 +55,6 @@ export class FileParserService implements OnModuleInit {
     await this.populateDatabaseService.populateDataBase(resultGetFromFile);
 
     this.logger.debug('Database populated successfully');
-
-    return resultGetFromFile;
-  }
-
-  async csv(file: Express.Multer.File): Promise<ResultCsvFileStructures> {
-    const workBook = await this.parser.read(file);
-
-    const resultGetFromFile: ResultCsvFileStructures = [];
-
-    workBook.getWorksheet().eachRow((row, number) => {
-      if (row.number !== 1) {
-        const cellValues = this.handleCell(row);
-        resultGetFromFile.push(cellValues);
-      }
-    });
-
-    this.logger.info('CSV file parsed successfully');
-
-    this.isValueRepeated(resultGetFromFile, 'studios');
-
-    await this.populateDatabaseService.populateDataBase(resultGetFromFile);
 
     return resultGetFromFile;
   }
@@ -141,5 +122,16 @@ export class FileParserService implements OnModuleInit {
     });
 
     return hasMore;
+  }
+
+  async populateDataBaseHandler() {
+    const hasData = await this.populateDatabaseService.hasData();
+    if (!hasData) {
+      await this.csvLocal();
+    } else {
+      this.logger.debug(
+        'Data already exists in the database. Skipping CSV parsing.',
+      );
+    }
   }
 }
