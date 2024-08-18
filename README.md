@@ -4,10 +4,7 @@ Languages: <a href="/README_PT.md" target="_blank">PT_BR: 🇧🇷</a>
 
 # A Scheduling and Management Solution for Business Events
 
-Desenvolver uma aplicação web com uma API RESTful para possibilitar a leitura da lista
-de indicados e vencedores da categoria Pior Filme do Golden Raspberry Awards,
-utilizando React para o frontend, Node.js para o backend, e MongoDB como banco de
-dados.
+Develop a web application with a RESTful API to enable reading the list of nominees and winners of the Worst Picture category of the Golden Raspberry Awards, using React for the frontend, Node.js for the backend, and MongoDB as the database.
 
 ## Dependencies and technologies
 
@@ -61,11 +58,25 @@ Make sure you have Docker and Docker Compose installed on your machine.
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-repo/nestjs-app.git
-cd nestjs-app
+git clone https://github.com/Dikendev/raspberry-awards-api
+cd raspberry-awards-api
 ```
 
-## 2. Installation
+### 2. Env file
+
+Here is an example of a `.env` file to run the application
+
+```plaintext
+PORT=3000
+NODE_ENV='dev'
+ORGANIZATION=report
+CONTEXT=raspberry
+APP=HUB
+
+DATABASE_URL="mongodb://localhost:27017"
+```
+
+### 3. Installation
 
 To install all the dependencies, use the package manager [npm](https://www.npmjs.com/)
 
@@ -73,7 +84,7 @@ To install all the dependencies, use the package manager [npm](https://www.npmjs
 npm install
 ```
 
-### 3. Build and Run the Application
+### 4. Build and Run the Application
 
 Use Docker Compose to build and run the application along with the MongoDB service:
 
@@ -93,9 +104,7 @@ And run the mongo service app:
 docker compose up mongo --build
 ```
 
-docker-compose up --build -d ?????? testar isso aqui depois
-
-### 4. Access the Application
+### 5. Access the Application
 
 Once the containers are up and running, you can access your NestJS application at:
 
@@ -109,7 +118,7 @@ The MongoDB database will be running at:
 mongodb://localhost:27017
 ```
 
-### 5. Stop the Containers
+### 6. Stop the Containers
 
 When you're done, you can stop and remove the running containers by executing:
 
@@ -140,9 +149,36 @@ docker-compose logs -f
 
 ## Database Modeling
 
-## Authentication
+## LOG
 
-If your API requires authentication, ensure you include the necessary headers or tokens in your requests.
+### Morgan
+
+Morgan is a middleware for logging HTTP requests in Node.js applications. It provides a simple and customizable way to log incoming requests, including details such as the request method, URL, status code, and response time. This helps in monitoring and debugging the application's HTTP traffic.
+
+- **Customizable Formats**: Supports various predefined log formats and allows custom formats.
+- **Real-time Monitoring**: Provides real-time logging of HTTP requests, aiding in immediate debugging.
+- **Stream Support**: Can be configured to stream logs to other logging libraries like Winston.
+- **Performance**: Lightweight and does not significantly impact application performance.
+
+### Winston
+
+Winston helps in capturing and managing logs from different parts of the application, providing a comprehensive logging solution.
+
+- **Multiple Transports**: Supports logging to multiple destinations like files, databases, and the console.
+- **Log Levels**: Allows setting different log levels (e.g., info, error, debug) for better log management.
+- **Custom Formats**: Supports custom log formats, including JSON and timestamped logs.
+- **Asynchronous Logging**: Handles logging asynchronously, ensuring minimal impact on application performance.
+- **Extensible**: Easily extendable with custom transports and plugins.
+
+### CLS (Continuation-Local Storage)
+
+CLS (Continuation-Local Storage) is used to maintain context across asynchronous calls in Node.js. It allows you to store and retrieve data throughout the lifecycle of a request, even as it passes through various asynchronous operations. This is particularly useful for logging, as it enables you to associate log entries with specific requests or transactions, providing better traceability and debugging capabilities.
+
+- **Context Preservation**: Maintains context across asynchronous operations, ensuring consistent data access.
+- **Request Tracking**: Associates log entries with specific requests, improving traceability.
+- **Error Handling**: Enhances error tracking by maintaining context information across async calls.
+- **Debugging**: Simplifies debugging by providing a consistent context throughout the request lifecycle.
+- **Integration**: Easily integrates with logging libraries like Winston to enhance log context.
 
 ## Postman Collections
 
@@ -173,75 +209,59 @@ If your API requires authentication, ensure you include the necessary headers or
 
 ### 2. Studios
 
-GET /studios
-
-Description: Retrieve a list of all studios.
-Response: Returns an array of studio objects.
-POST /studios
-
-Description: Create a new studio.
-Request Body: JSON object containing studio details (e.g., name).
-Response: Returns the newly created studio object.
-GET /studios/
-
-Description: Retrieve details of a specific studio by ID.
-Response: Returns a studio object with the specified ID.
-PATCH /studios/
-
-Description: Update details of a specific studio by ID.
-Request Body: JSON object containing updated studio details.
-Response: Returns the updated studio object.
-DELETE /studios/
-
-Description: Delete a specific studio by ID.
-Response: Returns a confirmation message or error if the studio does not exist.
+- GET /studios
+  - Description: Retrieve a list of all studios.
+  - Response: Returns an array of studio objects.
+- POST /studios
+  - Description: Create a new studio.
+  - Request Body: JSON object containing studio details (e.g., name).
+  - Response: Returns the newly created studio object.
+- GET /studios/
+  - Description: Retrieve details of a specific studio by ID.
+  - Response: Returns a studio object with the specified ID.
+- PATCH /studios/
+  - Description: Update details of a specific studio by ID.
+  - Request Body: JSON object containing updated studio details.
+  - Response: Returns the updated studio object.
+- DELETE /studios/
+  - Description: Delete a specific studio by ID.
+  - Response: Returns a confirmation message or error if the studio does not exist.
 
 ### 3. Movies
 
-## GET /movies
+- GET /movies
+  - Description: Retrieve a list of all movies.
+  - Response: Returns an array of movie objects.
+- POST /movies
+  - Description: Create a new movie.
+  - Request Body: JSON object containing movie details (e.g., title, year, studioId, producerId).
+  - Response: Returns the newly created movie object.
+- GET /movies/
+  - Description: Retrieve details of a specific movie by ID.
+  - Response: Returns a movie object with the specified ID.
+- PATCH /movies/
+  - Description: Update details of a specific movie by ID.
+  - Request Body: JSON object containing updated movie details.
+  - Response: Returns the updated movie object.
+- DELETE /movies/
+  - Description: Delete a specific movie by ID.
+  - Response: Returns a confirmation message or error if the movie does not exist.
 
-Description: Retrieve a list of all movies.
-Response: Returns an array of movie objects.
-POST /movies
+### 3. Analytics
 
-Description: Create a new movie.
-Request Body: JSON object containing movie details (e.g., title, year, studioId, producerId).
-Response: Returns the newly created movie object.
-GET /movies/
+- GET /analytics/largest-gap
 
-Description: Retrieve details of a specific movie by ID.
-Response: Returns a movie object with the specified ID.
-PATCH /movies/
+  - Description: Retrieve the producer with the largest gap between wins.
+  - Response: Returns an object containing the producer with the largest gap between wins.
 
-Description: Update details of a specific movie by ID.
-Request Body: JSON object containing updated movie details.
-Response: Returns the updated movie object.
-DELETE /movies/
+- GET /analytics/fastest-wins
 
-Description: Delete a specific movie by ID.
-Response: Returns a confirmation message or error if the movie does not exist. 4. Winners
-GET /winners
+  - Description: Retrieve the producer with the fastest consecutive wins.
+  - Response: Returns an object containing the producer with the fastest consecutive wins.
 
-Description: Retrieve a list of all winners.
-Response: Returns an array of winner objects.
-POST /winners
-
-Description: Create a new winner.
-Request Body: JSON object containing winner details (e.g., name).
-Response: Returns the newly created winner object.
-GET /winners/
-
-Description: Retrieve details of a specific winner by ID.
-Response: Returns a winner object with the specified ID.
-PATCH /winners/
-
-Description: Update details of a specific winner by ID.
-Request Body: JSON object containing updated winner details.
-Response: Returns the updated winner object.
-DELETE /winners/
-
-Description: Delete a specific winner by ID.
-Response: Returns a confirmation message or error if the winner does not exist.
+- GET /analytics/movie-counts
+  - Description: Retrieve the count of movies for each producer.
+  - Response: Returns an array of objects, each containing a producer and their respective movie count.
 
 ## Demonstration Images
 
@@ -249,7 +269,7 @@ Documentation in development....
 
 ## Conclusion
 
-Under development
+Project made for interview purpose
 
 ## Contributing
 
