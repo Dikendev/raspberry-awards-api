@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { FileUploadController } from '../file-upload.controller';
-import { FileParserService } from '../../domain/file-parser/file-parser.service';
+import { FileParserService } from '../../services/file-parser/file-parser.service';
 import { INestApplication } from '@nestjs/common';
-import { ResultCsvFileStructures } from '../../domain/file-parser/interfaces/csv.interface';
+import { ResultCsvFileStructures } from '../../services/file-parser/interfaces/csv.interface';
 import * as request from 'supertest';
 
 describe('FileUploadController', () => {
