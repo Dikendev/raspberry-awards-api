@@ -6,7 +6,6 @@ import {
   Param,
   Patch,
   Post,
-  Put,
   Query,
 } from '@nestjs/common';
 import { MovieService } from './movie.service';
@@ -41,20 +40,12 @@ export class MovieController {
     return this.movieService.findById(id);
   }
 
-  @Put(':id')
-  async updateMovie(
-    @Param('id', new ZodPipe(objectIdSchema)) id: string,
-    @Body() createMovieDto: CreateMovieDto,
-  ): Promise<MovieDocument> {
-    return this.movieService.updateMovie(id, createMovieDto);
-  }
-
   @Patch(':id')
-  async partialUpdateMovie(
+  async update(
     @Param('id', new ZodPipe(objectIdSchema)) id: string,
     @Body() updateMovieDto: Partial<CreateMovieDto>,
   ): Promise<MovieDocument> {
-    return this.movieService.partialUpdateMovie(id, updateMovieDto);
+    return this.movieService.updateMovie(id, updateMovieDto);
   }
 
   @Delete(':id')

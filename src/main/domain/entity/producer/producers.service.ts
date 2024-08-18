@@ -3,30 +3,21 @@ import {
   Inject,
   Injectable,
   NotFoundException,
-  OnModuleInit,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Producer, ProducerDocument } from './schemas/producer.schema';
 import { Model, Types } from 'mongoose';
-import { StudioService } from '../studio/studio.service';
 import { UpdateProducerDto } from './dtos/update-producer.dto';
 import { MovieService } from '../movie/movie.service';
 import { CreateProducerDto } from './dtos/create-producer.dto';
 
 @Injectable()
-export class ProducersService implements OnModuleInit {
+export class ProducersService {
   constructor(
     @InjectModel(Producer.name) private producerModel: Model<Producer>,
-    @Inject(forwardRef(() => StudioService))
-    private readonly studioService: StudioService,
     @Inject(forwardRef(() => MovieService))
     private readonly movieService: MovieService,
   ) {}
-
-  async onModuleInit() {
-    // await this.producerModel.ensureIndexes();
-    // await this.producerModel.syncIndexes();
-  }
 
   async create(
     createProducerDto: CreateProducerDto,

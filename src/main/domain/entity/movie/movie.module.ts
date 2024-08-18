@@ -10,7 +10,7 @@ import { StudioModule } from '../studio/studio.module';
   imports: [
     MongooseModule.forFeature([{ name: Movie.name, schema: MovieSchema }]),
     forwardRef(() => ProducersModule),
-    StudioModule,
+    forwardRef(() => StudioModule),
   ],
   providers: [MovieService],
   controllers: [MovieController],
