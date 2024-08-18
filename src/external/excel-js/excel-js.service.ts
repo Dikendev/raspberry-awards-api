@@ -4,6 +4,7 @@ import { Readable } from 'stream';
 import { LoggerKey, Logger } from '../logger/domain/logger.repository';
 import { _CSV_OPTIONS } from './constants/option.constant';
 import * as ExcelJS from 'exceljs';
+import path from 'path';
 
 @Injectable()
 export class ExcelJsService implements ParserRepository {
@@ -24,6 +25,18 @@ export class ExcelJsService implements ParserRepository {
       this.logger.info('Reading file');
       const stream = this.bufferToStream(file.buffer);
       await this.workBook.csv.read(stream, this.setCsvOptions());
+
+      return this.workBook;
+    } catch (error) {
+      this.logger.error('Error reading file', error);
+    }
+  }
+
+  async readLocal(): Promise<ExcelJS.Workbook> {
+    try {
+      this.logger.info('Reading file');
+      const fileLocal = 'src/public/movielist.csv';
+      await this.workBook.csv.readFile(fileLocal, this.setCsvOptions());
 
       return this.workBook;
     } catch (error) {
