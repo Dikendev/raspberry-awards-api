@@ -10,12 +10,14 @@ import {
   Logger,
   LoggerKey,
 } from '../../../external/logger/domain/logger.repository';
+import { PopulateDatabaseService } from '../../use-cases/when-file-is-readed/populate-database/populate-database.service';
 
 @Injectable()
 export class FileParserService {
   constructor(
     @Inject(LoggerKey) private logger: Logger,
     private readonly parser: ParserRepository,
+    private readonly populateDatabaseService: PopulateDatabaseService,
   ) {}
 
   async csv(file: Express.Multer.File): Promise<ResultCsvFileStructures> {
@@ -33,6 +35,8 @@ export class FileParserService {
     this.logger.info('CSV file parsed successfully');
 
     this.isValueRepeated(resultGetFromFile, 'studios');
+
+    await this.populateDatabaseService.populateDataBase(resultGetFromFile);
 
     return resultGetFromFile;
   }
@@ -57,7 +61,6 @@ export class FileParserService {
           csvResponse.winner = String(cell.value) as Winner;
           break;
         default:
-          console.log('Invalid column number');
           break;
       }
     });
@@ -85,7 +88,6 @@ export class FileParserService {
 
       if (nameToFind) {
         if (times.has(nameToFind)) {
-          console.log('nameToFind', nameToFind);
           times.set(nameToFind, times.get(nameToFind)! + 1);
         } else {
           times.set(nameToFind, 1);
@@ -101,7 +103,6 @@ export class FileParserService {
       }
     });
 
-    console.log(`The key "${keyToFind}" has more than one value: ${hasMore}`);
     return hasMore;
   }
 }
