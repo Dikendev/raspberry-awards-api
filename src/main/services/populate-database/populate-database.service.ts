@@ -169,6 +169,8 @@ export class PopulateDatabaseService implements OnModuleInit {
   }
 
   missingParamError(resultCsvFileStructures: ResultCsvFileStructures) {
+    if (!resultCsvFileStructures.length) this.throwMissingParamException();
+
     resultCsvFileStructures.forEach((resultCsvFileStructure) => {
       if (this.checkForMissingParam(resultCsvFileStructure)) {
         this.throwMissingParamException();
