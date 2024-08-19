@@ -11,31 +11,22 @@ dados.
 
 ## Dependências e tecnologias
 
-Este projeto usa várias dependências para gerenciar diferentes aspectos da aplicação. Abaixo está uma lista das principais dependências e dependências de desenvolvimento.
+Este projeto usa várias dependências para gerenciar diferentes aspectos da aplicação. Abaixo está uma lista das principais dependências.
 
-#### terminus
-
-- Adiciona capacidades de verificação de integridade à aplicação e banco de dados.
-
-#### mongoose
-
-- ORM para conectar com o MongoDB, ferramenta de modelagem de objetos MongoDB projetada para funcionar em um ambiente assíncrono.
-
-#### winston
-
-- Uma biblioteca de logging versátil para Node.js. Estou usando para log interno do sistema.
-
-#### mongan
-
-- Uma biblioteca de logging versátil para Node.js, utilizado para saber o tempo de cada request.
-
-#### zod
-
-- Biblioteca de validação de esquemas com foco em TypeScript.
-
-#### excelJs
-
-- Fornece uma ampla gama de recursos para criar, ler, modificar e formatar arquivos Excel e CSV.
+- **@nest-middlewares/morgan**: Middleware para registro de requisições HTTP.
+- **@nestjs/cache-manager**: Módulo de gerenciamento de cache para NestJS.
+- **@nestjs/swagger**: Integração do Swagger para documentação de API.
+- **@nestjs/terminus**: Verificações de saúde e monitoramento para aplicações NestJS.
+- **cache-manager**: Biblioteca geral de gerenciamento de cache.
+- **exceljs**: Biblioteca para leitura e escrita de arquivos Excel.
+- **mongoose**: Ferramenta de modelagem de objetos MongoDB.
+- **nestjs-cls**: Armazenamento Local de Continuação (CLS) para NestJS.
+- **uuid**: Biblioteca para geração de UUIDs.
+- **winston**: Biblioteca para Logging .
+- **winston-daily-rotate-file**: Transport para rotação diária de arquivos de log.
+- **winston-transport**: Transport base para Winston.
+- **zod**: Biblioteca de declaração e validação de esquemas orientada a TypeScript.
+  Transport
 
 ## Começando
 

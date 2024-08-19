@@ -8,31 +8,21 @@ Develop a web application with a RESTful API to enable reading the list of nomin
 
 ## Dependencies and technologies
 
-This project uses various dependencies to manage different aspects of the application. Below is a list of the principal dependencies and development dependencies.
+This project uses various dependencies to manage different aspects of the application. Below is a list of the principal dependencies.
 
-#### mongoose
-
-- ORM to connect with MongoDB, an object modeling tool designed to work in an asynchronous environment.
-
-#### terminus
-
-- Adds health check capabilities to the application and database.
-
-#### winston
-
-- A versatile logging library for Node.js.
-
-#### mongan
-
-- A versatile logging library for Node.js.
-
-#### zod
-
-- TypeScript-first schema validation library.
-
-#### excelJs
-
-- It provides a wide range of features for creating, reading, modifying, and formatting Excel files.
+- **@nest-middlewares/morgan**: Middleware for logging HTTP requests.
+- **@nestjs/cache-manager**: Cache management module for NestJS.
+- **@nestjs/swagger**: Swagger integration for API documentation.
+- **@nestjs/terminus**: Health checks and monitoring for NestJS applications.
+- **cache-manager**: General cache management library.
+- **exceljs**: Library for reading and writing Excel files.
+- **mongoose**: MongoDB object modeling tool.
+- **nestjs-cls**: Continuation Local Storage (CLS) for NestJS.
+- **uuid**: Library for generating UUIDs.
+- **winston**: Logging library.
+- **winston-daily-rotate-file**: Transport for rotating log files daily.
+- **winston-transport**: Base transport for Winston.
+- **zod**: TypeScript-first schema declaration and validation library.
 
 ## Getting Started
 
