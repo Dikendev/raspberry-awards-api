@@ -142,6 +142,12 @@ Para visualizar os logs dos contêineres em execução:
 docker-compose logs -f
 ```
 
+## Cobertura de Testes
+
+<img width="500" alt="GIF" align="center" src="./src/public/test-coverage.png">
+
+<br/>
+
 ## Como foi feita a analise do CSV
 
 ### Identificando cada item na linha

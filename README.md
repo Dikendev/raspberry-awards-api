@@ -139,6 +139,12 @@ To view the logs of the running containers:
 docker-compose logs -f
 ```
 
+## Tests Coverage
+
+<img width="500" alt="GIF" align="center" src="./src/public/test-coverage.png">
+
+<br/>
+
 ## How the CSV analysis was done
 
 ### Identifying each item in the row
