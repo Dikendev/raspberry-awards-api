@@ -9,6 +9,12 @@ de indicados e vencedores da categoria Pior Filme do Golden Raspberry Awards,
 utilizando React para o frontend, Node.js para o backend, e MongoDB como banco de
 dados.
 
+<div align="center">
+
+<img width="300" alt="GIF" align="center" src="./src/public/raspberry_logo_v5.jpeg">
+
+<div align="start">
+
 ## Dependências e tecnologias
 
 Este projeto usa várias dependências para gerenciar diferentes aspectos da aplicação. Abaixo está uma lista das principais dependências.

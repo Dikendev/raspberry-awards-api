@@ -6,6 +6,12 @@ Languages: <a href="/README-PT.md" target="_blank">PT_BR: 🇧🇷</a>
 
 Develop a web application with a RESTful API to enable reading the list of nominees and winners of the Worst Picture category of the Golden Raspberry Awards, using React for the frontend, Node.js for the backend, and MongoDB as the database.
 
+<div align="center">
+
+<img width="300" alt="GIF" align="center" src="./src/public/raspberry_logo_v5.jpeg">
+
+<div align="start">
+
 ## Dependencies and technologies
 
 This project uses various dependencies to manage different aspects of the application. Below is a list of the principal dependencies.
