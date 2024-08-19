@@ -61,17 +61,22 @@ export class PopulateDatabaseService implements OnModuleInit {
           name: producers[j],
         });
 
-        const studio = await this.studioService.create({
-          name: resultGetFromFile[i].studios,
-        });
+        const studios = this.convertStringsWithSeparatorToArray(
+          resultGetFromFile[i].studios,
+        );
+        for (let k = 0; k < studios.length; k++) {
+          const studio = await this.studioService.create({
+            name: studios[k],
+          });
 
-        await this.movieService.create({
-          year: resultGetFromFile[i].year,
-          title: resultGetFromFile[i].title,
-          studioId: studio.id,
-          producerId: producer.id,
-          winner: resultGetFromFile[i].winner,
-        });
+          await this.movieService.create({
+            year: resultGetFromFile[i].year,
+            title: resultGetFromFile[i].title,
+            studioId: studio.id,
+            producerId: producer.id,
+            winner: resultGetFromFile[i].winner,
+          });
+        }
       }
     }
     this.logger.debug('Database populated successfully');

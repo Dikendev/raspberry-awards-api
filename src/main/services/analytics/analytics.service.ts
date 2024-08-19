@@ -7,12 +7,18 @@ import {
   AnalyticsLargestGap,
   AnalyticsMovieCounts,
 } from './interfaces/analytics.interface';
+import { MovieService } from '../../domain/entity/movie/movie.service';
+import { StudioService } from '../../domain/entity/studio/studio.service';
 
 @Injectable()
 export class AnalyticsService {
-  constructor(private readonly producerService: ProducersService) {}
+  constructor(
+    private readonly producerService: ProducersService,
+    private readonly movieService: MovieService,
+    private readonly studioService: StudioService,
+  ) {}
 
-  async getProducerWithLargestGap(): Promise<AnalyticsLargestGap> {
+  async producerWithLargestGap(): Promise<AnalyticsLargestGap> {
     const producers = await this.producerService.findAll();
     let largestGapProducer = null;
     let largestGap = 0;
@@ -45,7 +51,7 @@ export class AnalyticsService {
     };
   }
 
-  async getProducerWithFastestWins(): Promise<AnalyticsFastestWins> {
+  async producerWithFastestWins(): Promise<AnalyticsFastestWins> {
     const producers = await this.producerService.findAll();
     let fastestProducer: ProducerDocument = null;
     let fastestWins = Infinity;
@@ -78,8 +84,20 @@ export class AnalyticsService {
     };
   }
 
-  async getProducerMovieCounts(): Promise<AnalyticsMovieCounts> {
+  async producerMovieCounts(): Promise<AnalyticsMovieCounts> {
     return this.producerService.getProducerMovieCounts();
+  }
+
+  async moviesCountByYear(): Promise<any> {
+    return this.movieService.moviesCountByYear();
+  }
+
+  async studioCount(): Promise<number> {
+    return this.movieService.count();
+  }
+
+  async moviesCountByStudio(): Promise<any> {
+    return this.studioService.moviesCountByStudio();
   }
 
   throwErrorIfNotSufficientData(

@@ -60,9 +60,7 @@ export class StudioService {
   async findById(id: string) {
     const studio = await this.studioModel.findById(id).exec();
 
-    if (!studio) {
-      throw new NotFoundException(`Studio with ID ${id} not found`);
-    }
+    if (!studio) throw new NotFoundException(`Studio with ID ${id} not found`);
 
     return studio;
   }
@@ -132,14 +130,35 @@ export class StudioService {
   async delete(id: string) {
     const studio = await this.studioModel.findByIdAndDelete(id).exec();
 
-    if (!studio) {
-      throw new NotFoundException(`Studio with ID ${id} not found`);
-    }
+    if (!studio) throw new NotFoundException(`Studio with ID ${id} not found`);
 
     return `Studio with id:${id} deleted successfully`;
   }
 
   async exists(id: string) {
     return this.studioModel.exists({ _id: id });
+  }
+
+  async count(): Promise<number> {
+    return this.studioModel.countDocuments().exec();
+  }
+
+  async moviesCountByStudio(): Promise<any> {
+    return this.studioModel.aggregate([
+      {
+        $unwind: '$movies',
+      },
+      {
+        $group: {
+          _id: '$name',
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $sort: {
+          _id: 1,
+        },
+      },
+    ]);
   }
 }

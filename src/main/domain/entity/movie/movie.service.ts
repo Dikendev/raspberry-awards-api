@@ -180,4 +180,25 @@ export class MovieService {
 
     return { studioId, producerId };
   }
+
+  async moviesCountByYear(): Promise<any> {
+    return this.movieModel.aggregate([
+      {
+        $match: {
+          year: { $ne: null },
+        },
+      },
+      {
+        $group: {
+          _id: '$year',
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $sort: {
+          _id: 1,
+        },
+      },
+    ]);
+  }
 }

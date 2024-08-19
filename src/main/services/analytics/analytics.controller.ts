@@ -19,8 +19,8 @@ export class AnalyticsController {
     'Get the producer with the largest gap between movies. Returns the producer.',
   )
   @Get('largest-gap')
-  async getProducerWithLargestGap(): Promise<AnalyticsLargestGap> {
-    return this.analyticsService.getProducerWithLargestGap();
+  async producerWithLargestGap(): Promise<AnalyticsLargestGap> {
+    return this.analyticsService.producerWithLargestGap();
   }
 
   @ApiSwagger(
@@ -29,8 +29,8 @@ export class AnalyticsController {
     'Get the producer with the fastest wins. Returns the producer.',
   )
   @Get('fastest-wins')
-  async getProducerWithFastestWins(): Promise<AnalyticsFastestWins> {
-    return this.analyticsService.getProducerWithFastestWins();
+  async producerWithFastestWins(): Promise<AnalyticsFastestWins> {
+    return this.analyticsService.producerWithFastestWins();
   }
 
   @ApiSwagger(
@@ -39,7 +39,37 @@ export class AnalyticsController {
     'Get the producer with the most movies. Returns the result.',
   )
   @Get('movie-counts')
-  async getProducerMovieCounts(): Promise<AnalyticsMovieCounts> {
-    return this.analyticsService.getProducerMovieCounts();
+  async producerMovieCounts(): Promise<AnalyticsMovieCounts> {
+    return this.analyticsService.producerMovieCounts();
+  }
+
+  @ApiSwagger(
+    'Analytics',
+    'Get the movies count by year',
+    'Get the movies count by year. Returns the result.',
+  )
+  @Get('movie-counts-by-year')
+  async moviesCountsByYear(): Promise<any> {
+    return this.analyticsService.moviesCountByYear();
+  }
+
+  @ApiSwagger(
+    'Analytics',
+    'Get the studio count',
+    'Get the studio count. Returns the result.',
+  )
+  @Get('studio-count')
+  async studioCount(): Promise<any> {
+    return this.analyticsService.studioCount();
+  }
+
+  @ApiSwagger(
+    'Analytics',
+    'Get the movies count by studio',
+    'Get the movies count by studio. Returns the result.',
+  )
+  @Get('movie-counts-by-studio')
+  async moviesCountByStudio(): Promise<any> {
+    return this.analyticsService.moviesCountByStudio();
   }
 }
