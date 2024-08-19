@@ -142,6 +142,30 @@ Para visualizar os logs dos contêineres em execução:
 docker-compose logs -f
 ```
 
+## Como foi feita a analise do CSV
+
+### Identificando cada item na linha
+
+<img width="700" alt="GIF" align="center" src="./src/public/movie-overview-algo.png">
+
+<br/>
+
+Aqui estou demonstrando como o algoritmo funciona. Primeiro, localizo o filme e, em seguida, extraio e listo todos os estúdios e produtores da linha, separando-os por vírgulas e pela palavra 'and'. Isso me permite contá-los de forma eficaz.
+
+Então a TriStar Pictures está **associado a 8 filmes** neste exemplo.
+
+Ao usar essa estratégia, consegui medir com mais precisão a quantidade de filmes para cada **produtor e estúdio.**
+
+### Criando a estrutura para salvar no banco
+
+<img width="700" alt="GIF" align="center" src="./src/public/movie-data-algo.png">
+
+<br/>
+
+Neste exemplo, o filme Daddy Day Camp será salvo no banco de dados com a relação com os dois estúdios **(TriStar Pictures e Revolution Studios)** e os três produtores **(Matt Berenson, John Davis e Wyck Godfrey)**.
+
+Dessa forma, será criado um banco de dados contendo todas as informações necessárias sobre os filmes.
+
 ## Documentação da API
 
 ### Swagger

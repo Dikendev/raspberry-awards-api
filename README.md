@@ -139,6 +139,30 @@ To view the logs of the running containers:
 docker-compose logs -f
 ```
 
+## How the CSV analysis was done
+
+### Identifying each item in the row
+
+<img width="700" alt="GIF" align="center" src="./src/public/movie-overview-algo.png">
+
+<br/>
+
+Here I'm demonstrating how the algorithm works. First, I locate the movie, and then I extract and list all the studios and producers from the row, separating them by commas and the word 'and.' This allows me to count them effectively.
+
+So TriStar Pictures is **associated with 8 movies** in this example.
+
+By using this strategy, I was able to more accurately measure the number of movies for each **producer and studio.**
+
+### Creating the structure to save in the database
+
+<img width="700" alt="GIF" align="center" src="./src/public/movie-data-algo.png">
+
+<br/>
+
+In this example, the movie Daddy Day Camp will be saved in the database with its associations to both studios **(TriStar Pictures and Revolution Studios)** and all three producers **(Matt Berenson, John Davis, and Wyck Godfrey)**.
+
+This will create a database that contains all the necessary information about the movies.
+
 ## Api Documentations
 
 ### Swagger
