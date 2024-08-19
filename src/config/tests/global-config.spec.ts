@@ -20,6 +20,8 @@ describe('globalConfig', () => {
       useGlobalFilters: jest.fn(),
       enableShutdownHooks: jest.fn(),
       enableCors: jest.fn(),
+      setGlobalPrefix: jest.fn(),
+      listen: jest.fn(),
       get: jest.fn().mockReturnValue(loggerAdapterService),
     };
 

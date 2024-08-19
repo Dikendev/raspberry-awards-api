@@ -44,12 +44,11 @@ describe('ExceljsService', () => {
         path: '',
       };
 
-      const readSpy = jest.spyOn(service.workBook.csv, 'read');
-
       const result = await service.read(file);
 
-      expect(logger.info).toHaveBeenCalledWith('Reading file');
-      expect(readSpy).toHaveBeenCalled();
+      expect(logger.info).toHaveBeenCalledWith('Reading CSV file');
+      expect(logger.info).toHaveBeenCalledWith('File read successfully');
+
       expect(result).toBeInstanceOf(ExcelJS.Workbook);
     });
 
@@ -66,10 +65,6 @@ describe('ExceljsService', () => {
         filename: '',
         path: '',
       };
-
-      jest
-        .spyOn(service.workBook.csv, 'read')
-        .mockRejectedValue(new Error('Error reading file'));
 
       try {
         await service.read(file);

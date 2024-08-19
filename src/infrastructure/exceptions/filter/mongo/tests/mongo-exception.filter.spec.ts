@@ -1,4 +1,4 @@
-import { MongoExceptionFilter } from './mongo-exception.filter';
+import { MongoExceptionFilter } from '../mongo-exception.filter';
 
 describe('MongoExceptionFilter', () => {
   it('should be defined', () => {

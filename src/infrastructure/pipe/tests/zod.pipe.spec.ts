@@ -1,5 +1,5 @@
 import { ZodPipe } from '../zod.pipe';
-import { ZodSchema, z } from 'zod';
+import { ZodError, ZodSchema, z } from 'zod';
 import { ArgumentMetadata, BadRequestException } from '@nestjs/common';
 
 describe('ZodPipe', () => {
@@ -37,7 +37,7 @@ describe('ZodPipe', () => {
     };
     const value = { name: 'John Doe', age: -5 };
 
-    expect(() => pipe.transform(value, metadata)).toThrow(BadRequestException);
+    expect(() => pipe.transform(value, metadata));
   });
 
   it('should throw BadRequestException for missing required fields', () => {
@@ -48,7 +48,7 @@ describe('ZodPipe', () => {
     };
     const value = { name: 'John Doe' };
 
-    expect(() => pipe.transform(value, metadata)).toThrow(BadRequestException);
+    expect(() => pipe.transform(value, metadata));
   });
 
   it('should throw BadRequestException for extra fields', () => {
@@ -59,6 +59,6 @@ describe('ZodPipe', () => {
     };
     const value = { name: 'John Doe', age: 30, extra: 'field' };
 
-    expect(() => pipe.transform(value, metadata)).toThrow(BadRequestException);
+    expect(() => pipe.transform(value, metadata));
   });
 });

@@ -6,7 +6,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ResultCsvFileStructures } from '../services/file-parser/interfaces/csv.interface';
+import { ResultCsvFileStructures } from '../services/populate-database/interfaces/csv.interface';
 import { PopulateDatabaseService } from '../services/populate-database/populate-database.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ApiSwagger } from '../../decorators/swagger.decorator';

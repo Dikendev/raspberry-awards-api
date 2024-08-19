@@ -2,7 +2,7 @@ import mongoose, { Types, Document } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Producer } from '../../producer/schemas/producer.schema';
 import { Studio } from '../../studio/schemas/studio.schema';
-import { Winner } from '../../../../services/file-parser/interfaces/csv.interface';
+import { Winner } from '../../../../services/populate-database/interfaces/csv.interface';
 
 export type MovieDocument = Movie & Document<Types.ObjectId>;
 

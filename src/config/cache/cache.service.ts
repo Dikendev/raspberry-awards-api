@@ -9,8 +9,8 @@ import { Cache } from 'cache-manager';
 @Injectable()
 export class CacheService {
   constructor(
-    @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
-    @Inject(LoggerKey) private readonly logger: Logger,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    @Inject(LoggerKey) private logger: Logger,
   ) {}
 
   async checkCache(key: string): Promise<any> {

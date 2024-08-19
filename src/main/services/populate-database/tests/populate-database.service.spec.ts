@@ -1,5 +1,4 @@
 import { Test, TestingModule } from '@nestjs/testing';
-
 import * as ExcelJS from 'exceljs';
 import { PopulateDatabaseService } from '../populate-database.service';
 import { MovieService } from '../../../domain/entity/movie/movie.service';
@@ -10,7 +9,7 @@ import {
   Logger,
   LoggerKey,
 } from '../../../../external/logger/domain/logger.repository';
-import { Winner } from '../../../services/file-parser/interfaces/csv.interface';
+import { Winner } from '../interfaces/csv.interface';
 
 describe('PopulateDatabaseService E2E', () => {
   let service: PopulateDatabaseService;
@@ -36,7 +35,7 @@ describe('PopulateDatabaseService E2E', () => {
         },
         {
           provide: LoggerKey,
-          useValue: { debug: jest.fn(), error: jest.fn() },
+          useValue: { debug: jest.fn(), error: jest.fn(), info: jest.fn() },
         },
       ],
     }).compile();
@@ -71,6 +70,31 @@ describe('PopulateDatabaseService E2E', () => {
 
   it('should logger be defined', () => {
     expect(logger).toBeDefined();
+  });
+
+  describe('onModuleInit', () => {
+    it('should call csvLocal if no data exists in the database', async () => {
+      jest.spyOn(service, 'hasData').mockResolvedValue(false);
+      const csvLocalSpy = jest.spyOn(service, 'csvLocal').mockResolvedValue([]);
+
+      await service.onModuleInit();
+
+      expect(service.hasData).toHaveBeenCalled();
+      expect(csvLocalSpy).toHaveBeenCalled();
+    });
+
+    it('should not call csvLocal if data exists in the database', async () => {
+      jest.spyOn(service, 'hasData').mockResolvedValue(true);
+      const csvLocalSpy = jest.spyOn(service, 'csvLocal').mockResolvedValue([]);
+
+      await service.onModuleInit();
+
+      expect(service.hasData).toHaveBeenCalled();
+      expect(csvLocalSpy).not.toHaveBeenCalled();
+      expect(logger.debug).toHaveBeenCalledWith(
+        'Data already exists in the database, skipping CSV parsing and database population',
+      );
+    });
   });
 
   describe('populateDataBase', () => {
@@ -149,13 +173,31 @@ describe('PopulateDatabaseService E2E', () => {
 
   describe('convertToArray', () => {
     it('should convert a comma-separated string to an array', () => {
-      const result = service.convertToArray('Producer1, Producer2');
+      const result = service.convertStringsWithSeparatorToArray(
+        'Producer1, Producer2',
+      );
       expect(result).toEqual(['Producer1', 'Producer2']);
     });
 
     it('should convert an "and" separated string to an array', () => {
-      const result = service.convertToArray('Producer1 and Producer2');
+      const result = service.convertStringsWithSeparatorToArray(
+        'Producer1 and Producer2',
+      );
       expect(result).toEqual(['Producer1', 'Producer2']);
+    });
+  });
+
+  describe('csv', () => {
+    it('should read uploaded file and process it', async () => {
+      const mockFile = {} as Express.Multer.File;
+      const mockWorkbook = new ExcelJS.Workbook();
+      jest.spyOn(parserRepository, 'read').mockResolvedValue(mockWorkbook);
+      const readFileSpy = jest.spyOn(service, 'readFile').mockResolvedValue([]);
+
+      await service.csv(mockFile);
+
+      expect(parserRepository.read).toHaveBeenCalledWith(mockFile);
+      expect(readFileSpy).toHaveBeenCalledWith(mockWorkbook);
     });
   });
 
@@ -190,7 +232,6 @@ describe('PopulateDatabaseService E2E', () => {
       jest.spyOn(service, 'populateDataBase').mockImplementation(jest.fn());
 
       const result = await service.readFile(workBook);
-
       expect(result).toEqual([
         {
           year: 2020,

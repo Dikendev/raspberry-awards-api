@@ -12,7 +12,7 @@ import {
   ResultCsvFileStructure,
   ResultCsvFileStructures,
   Winner,
-} from '../file-parser/interfaces/csv.interface';
+} from './interfaces/csv.interface';
 import { ParserRepository } from '../../../external/excel-js/repository/parser-repository';
 import * as ExcelJS from 'exceljs';
 import {

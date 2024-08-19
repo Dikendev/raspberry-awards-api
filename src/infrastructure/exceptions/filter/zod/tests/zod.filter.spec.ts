@@ -1,4 +1,4 @@
-import { ZodFilter } from './zod.filter';
+import { ZodFilter } from '../zod.filter';
 
 describe('ZodFilter', () => {
   it('should be defined', () => {
