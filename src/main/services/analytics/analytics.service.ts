@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ProducersService } from '../../domain/entity/producer/producers.service';
 import { Movie } from '../../domain/entity/movie/schemas/movie.schema';
 
@@ -27,6 +27,12 @@ export class AnalyticsService {
       }
     });
 
+    this.throwErrorIfNotSufficientData(
+      largestGapProducer,
+      largestGap,
+      'Not enough data to calculate largest gap',
+    );
+
     return {
       producer: largestGapProducer,
       largestGap,
@@ -54,12 +60,27 @@ export class AnalyticsService {
       }
     });
 
+    this.throwErrorIfNotSufficientData(
+      fastestProducer,
+      fastestGap,
+      'Not enough data to calculate fastest wins gap',
+    );
+
     return {
       producer: fastestProducer,
       fastestGap,
     };
   }
 
+  throwErrorIfNotSufficientData(
+    fastestProducer: string,
+    fastestGap: number,
+    message: string,
+  ): void {
+    if (!fastestProducer || fastestGap === Infinity) {
+      throw new HttpException(message, HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+  }
   async getProducerMovieCounts(): Promise<
     { name: string; movieCount: number }[]
   > {
