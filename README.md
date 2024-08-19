@@ -224,6 +224,7 @@ CLS (Continuation-Local Storage) is used to maintain context across asynchronous
 ### 1. Api Health
 
 - GET /api/health
+
   - Description: Check the health status of the API.
   - Response: Returns the health status of the API.
 
@@ -280,6 +281,7 @@ CLS (Continuation-Local Storage) is used to maintain context across asynchronous
   - Response: Returns the updated studio object.
 
 - DELETE /api/studio/{id}
+
   - Description: Delete a studio by ID.
   - Response: Returns a confirmation message.
 
@@ -308,6 +310,7 @@ CLS (Continuation-Local Storage) is used to maintain context across asynchronous
   - Response: Returns the updated movie object.
 
 - DELETE /api/movie/{id}
+
   - Description: Delete a movie by ID.
   - Response: Returns a confirmation message.
 
@@ -324,8 +327,24 @@ CLS (Continuation-Local Storage) is used to maintain context across asynchronous
   - Response: Return the analytics data.
 
 - GET /api/analytics/movie-counts
+
   - Description: Retrieve the movie counts analytics.
   - Response: Returns the analytics data.
+
+- GET /api/analytics/movie-counts-by-year
+
+  - Description: Retrieve the movie counts analytics by year.
+  - Response: Returns the analytics data.
+
+- GET /api/analytics/studio-count
+
+  - Description: Retrieve the studio count analytics.
+  - Response: Returns the analytics data.
+
+- GET /api/analytics/movie-counts-by-studio
+
+  - Description: Retrieve the movie counts analytics by studio.
+  - Response: Returns the analytics data
 
 ### 6. Upload Files
 

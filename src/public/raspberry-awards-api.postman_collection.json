@@ -360,7 +360,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"title\": \"Filme 2222aaa\" ,\n    \"year\": 2005,\n    \"studio\": \"1312\",\n    \"producer\": \"1231232\",\n    \"winner\": \"yes\"\n}\n\n// {\n//     \"title\": \"Filme 2\" ,\n//     \"year\": 205,\n//     \"studioId\": \"66c0d4efd45b89a65ad3e01d\",\n//     \"producerId\": \"66c0d4f5d45b89a65ad3e020\",\n//     \"winner\": \"yes\"\n// }",
+							"raw": "{\n    \"title\": \"Filme 5\" ,\n    \"year\": 2006,\n    \"studio\": \"dasdasd\",\n    \"producer\": \"sdasda\",\n    \"winner\": \"yes\"\n}\n\n// {\n//     \"title\": \"Filme 2\" ,\n//     \"year\": 205,\n//     \"studioId\": \"66c0d4efd45b89a65ad3e01d\",\n//     \"producerId\": \"66c0d4f5d45b89a65ad3e020\",\n//     \"winner\": \"yes\"\n// }\n\n\n// Response using response annotation\n// {\n//     \"_id\": \"66c271f5c95393eafe154d4c\",\n//     \"title\": \"Filme 4\",\n//     \"year\": 2006,\n//     \"studio\": [\n//         \"66c271f5c95393eafe154d44\"\n//     ],\n//     \"producer\": [\n//         \"66c271f5c95393eafe154d47\"\n//     ],\n//     \"winner\": \"yes\",\n//     \"__v\": 0\n// }",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -409,6 +409,48 @@
 							"path": [
 								"api",
 								"movie"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "find-all (pagination)",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Diego\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/movie?page=3&limit=5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"movie"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "3"
+								},
+								{
+									"key": "limit",
+									"value": "5"
+								}
 							]
 						}
 					},
@@ -574,6 +616,69 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "movie-counts-by-year",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/analytics/movie-counts",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"analytics",
+								"movie-counts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "studio-count",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/analytics/movie-counts",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"analytics",
+								"movie-counts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "movie-counts-by-studio",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/analytics/movie-counts",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"analytics",
+								"movie-counts"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -591,7 +696,7 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "/Users/diken/Downloads/movielist.csv"
+									"src": "/Users/diken/Downloads/mooo.csv"
 								}
 							]
 						},

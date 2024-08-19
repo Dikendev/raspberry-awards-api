@@ -330,6 +330,21 @@ CLS (Continuation-Local Storage) é usado para manter o contexto em chamadas ass
   - Descrição: Recuperar as análises de contagem de filmes.
   - Resposta: Retorna os dados das análises.
 
+- GET /api/analytics/movie-counts-by-year
+
+  - Descrição: Recuperar as análises de contagem de filmes por ano.
+  - Resposta: Retorna os dados das análises.
+
+- GET /api/analytics/studio-count
+
+  - Descrição: Recuperar as análises de contagem de estúdios.
+  - Resposta: Retorna os dados das análises.
+
+- GET /api/analytics/movie-counts-by-studio
+
+  - Descrição: Recuperar as análises de contagem de filmes por estúdio.
+  - Resposta: Retorna os dados das análises.
+
 ### 6. Upload Files
 
 - POST /api/upload-file/csv
