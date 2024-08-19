@@ -143,24 +143,20 @@ export class MovieService {
     return updatedMovie;
   }
 
-  async exists(id: string) {
-    return this.movieModel.exists({ _id: id });
-  }
-
-  async deleteById(id: string) {
+  async deleteById(id: string): Promise<string> {
     const movie = await this.findById(id);
     await movie.deleteOne();
     return `Movie with id:${id} deleted successfully`;
   }
 
-  async deleteProducerRelation(producerId: string) {
+  async deleteProducerRelation(producerId: string): Promise<string> {
     await this.movieModel
       .updateMany({ producer: producerId }, { $pull: { producer: producerId } })
       .exec();
     return `Producer with id:${producerId} and associated movies deleted successfully`;
   }
 
-  async count() {
+  async count(): Promise<number> {
     return this.movieModel.countDocuments().exec();
   }
 

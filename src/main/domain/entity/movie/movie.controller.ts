@@ -3,7 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  HttpStatus,
   Param,
   Patch,
   Post,
@@ -16,7 +15,6 @@ import { ZodPipe } from '../../../../infrastructure/pipe/zod.pipe';
 import { objectIdSchema } from '../../../../utils/validate-mongo-id';
 import { MovieDocument } from './schemas/movie.schema';
 import { ApiTags } from '@nestjs/swagger';
-import { Response } from 'express';
 import { ApiSwagger } from '../../../../decorators/swagger.decorator';
 import { ApiSwaggerPagination } from '../../../../decorators/pagination.decorator';
 
@@ -32,12 +30,10 @@ export class MovieController {
   )
   @Post()
   async create(
-    @Res() response: Response,
     @Body(new ZodPipe(CreateMovieSchema))
     createMovieDto: CreateMovieDto,
-  ) {
-    const newMovie = await this.movieService.create(createMovieDto);
-    return response.status(HttpStatus.CREATED).json(newMovie);
+  ): Promise<MovieDocument> {
+    return this.movieService.create(createMovieDto);
   }
 
   @ApiSwagger(

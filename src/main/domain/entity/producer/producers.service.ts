@@ -10,6 +10,7 @@ import { Model, Types } from 'mongoose';
 import { UpdateProducerDto } from './dtos/update-producer.dto';
 import { MovieService } from '../movie/movie.service';
 import { CreateProducerDto } from './dtos/create-producer.dto';
+import { AnalyticsMovieCounts } from '../../../services/analytics/interfaces/analytics.interface';
 
 @Injectable()
 export class ProducersService {
@@ -119,10 +120,8 @@ export class ProducersService {
     return this.producerModel.exists({ _id: id });
   }
 
-  async getProducerMovieCounts(): Promise<
-    { name: string; movieCount: number }[]
-  > {
-    const producers = await this.producerModel.aggregate([
+  async getProducerMovieCounts(): Promise<AnalyticsMovieCounts> {
+    return this.producerModel.aggregate([
       {
         $project: {
           name: 1,
@@ -130,7 +129,5 @@ export class ProducersService {
         },
       },
     ]);
-
-    return producers;
   }
 }

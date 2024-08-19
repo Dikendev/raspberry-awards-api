@@ -68,7 +68,7 @@ describe('AnalyticsService', () => {
       const result = await service.getProducerWithFastestWins();
       expect(result).toEqual({
         producer: mockProducers[0],
-        fastestGap: 10,
+        fastestWins: 10,
       });
     });
   });

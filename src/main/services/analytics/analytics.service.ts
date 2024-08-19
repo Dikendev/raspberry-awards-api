@@ -1,12 +1,18 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ProducersService } from '../../domain/entity/producer/producers.service';
 import { Movie } from '../../domain/entity/movie/schemas/movie.schema';
+import { ProducerDocument } from '../../domain/entity/producer/schemas/producer.schema';
+import {
+  AnalyticsFastestWins,
+  AnalyticsLargestGap,
+  AnalyticsMovieCounts,
+} from './interfaces/analytics.interface';
 
 @Injectable()
 export class AnalyticsService {
   constructor(private readonly producerService: ProducersService) {}
 
-  async getProducerWithLargestGap(): Promise<any> {
+  async getProducerWithLargestGap(): Promise<AnalyticsLargestGap> {
     const producers = await this.producerService.findAll();
     let largestGapProducer = null;
     let largestGap = 0;
@@ -39,10 +45,10 @@ export class AnalyticsService {
     };
   }
 
-  async getProducerWithFastestWins(): Promise<any> {
+  async getProducerWithFastestWins(): Promise<AnalyticsFastestWins> {
     const producers = await this.producerService.findAll();
-    let fastestProducer = null;
-    let fastestGap = Infinity;
+    let fastestProducer: ProducerDocument = null;
+    let fastestWins = Infinity;
 
     producers.forEach((producer) => {
       const winningMovies = producer.movies
@@ -52,8 +58,8 @@ export class AnalyticsService {
       if (winningMovies.length > 1) {
         for (let i = 1; i < winningMovies.length; i++) {
           const gap = winningMovies[i].year - winningMovies[i - 1].year;
-          if (gap < fastestGap) {
-            fastestGap = gap;
+          if (gap < fastestWins) {
+            fastestWins = gap;
             fastestProducer = producer;
           }
         }
@@ -62,28 +68,27 @@ export class AnalyticsService {
 
     this.throwErrorIfNotSufficientData(
       fastestProducer,
-      fastestGap,
+      fastestWins,
       'Not enough data to calculate fastest wins gap',
     );
 
     return {
       producer: fastestProducer,
-      fastestGap,
+      fastestWins,
     };
   }
 
+  async getProducerMovieCounts(): Promise<AnalyticsMovieCounts> {
+    return this.producerService.getProducerMovieCounts();
+  }
+
   throwErrorIfNotSufficientData(
-    fastestProducer: string,
+    fastestProducer: ProducerDocument,
     fastestGap: number,
     message: string,
   ): void {
     if (!fastestProducer || fastestGap === Infinity) {
       throw new HttpException(message, HttpStatus.UNPROCESSABLE_ENTITY);
     }
-  }
-  async getProducerMovieCounts(): Promise<
-    { name: string; movieCount: number }[]
-  > {
-    return this.producerService.getProducerMovieCounts();
   }
 }

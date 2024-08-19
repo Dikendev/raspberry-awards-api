@@ -31,7 +31,7 @@ export class PopulateDatabaseService implements OnModuleInit {
     private readonly parser: ParserRepository,
   ) {}
 
-  async onModuleInit() {
+  async onModuleInit(): Promise<void> {
     await this.populateDataBaseHandler();
   }
 
