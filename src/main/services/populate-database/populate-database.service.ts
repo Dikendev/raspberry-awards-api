@@ -23,9 +23,6 @@ import mongoose from 'mongoose';
 
 @Injectable()
 export class PopulateDatabaseService implements OnModuleInit {
-  async onModuleInit() {
-    await this.populateDataBaseHandler();
-  }
   constructor(
     @Inject(LoggerKey) private logger: Logger,
     private readonly movieService: MovieService,
@@ -34,11 +31,30 @@ export class PopulateDatabaseService implements OnModuleInit {
     private readonly parser: ParserRepository,
   ) {}
 
+  async onModuleInit() {
+    await this.populateDataBaseHandler();
+  }
+
+  async populateDataBaseHandler(): Promise<void> {
+    const hasData = await this.hasData();
+
+    if (!hasData) {
+      await this.csvLocal();
+      return;
+    }
+
+    this.logger.debug(
+      'Data already exists in the database, skipping CSV parsing and database population',
+    );
+  }
+
   async populateDataBase(
     resultGetFromFile: ResultCsvFileStructures,
   ): Promise<void> {
     for (let i = 0; i < resultGetFromFile.length; i++) {
-      const producers = this.convertToArray(resultGetFromFile[i].producers);
+      const producers = this.convertStringsWithSeparatorToArray(
+        resultGetFromFile[i].producers,
+      );
 
       for (let j = 0; j < producers.length; j++) {
         const producer = await this.producer.create({
@@ -58,33 +74,10 @@ export class PopulateDatabaseService implements OnModuleInit {
         });
       }
     }
-  }
-
-  async hasData(): Promise<boolean> {
-    const count = await this.movieService.count();
-    return count > 0;
-  }
-
-  async populateDataBaseHandler(): Promise<void> {
-    const hasData = await this.hasData();
-    if (!hasData) {
-      await this.csvLocal();
-    } else {
-      this.logger.debug(
-        'Data already exists in the database, skipping CSV parsing and database population',
-      );
-    }
-  }
-
-  convertToArray(input: string): string[] {
-    return input
-      .split(/,\s*|and\s+/)
-      .map((item) => item.trim())
-      .filter((item) => item !== '');
+    this.logger.debug('Database populated successfully');
   }
 
   async csvLocal(): Promise<ResultCsvFileStructures> {
-    this.logger.debug('Reading file');
     try {
       const workBook = await this.parser.readLocal();
       return this.readFile(workBook);
@@ -95,15 +88,37 @@ export class PopulateDatabaseService implements OnModuleInit {
   }
 
   async csv(file: Express.Multer.File): Promise<ResultCsvFileStructures> {
-    const workBook = await this.parser.read(file);
-    return this.readFile(workBook);
+    this.logger.debug(`Reading file: ${file.originalname}`);
+    try {
+      const workBook = await this.parser.read(file);
+      return this.readFile(workBook);
+    } catch (error) {
+      this.logger.error('Error reading file', error);
+      throw new HttpException(
+        'Error reading file',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   async readFile(workBook: ExcelJS.Workbook): Promise<ResultCsvFileStructures> {
-    this.logger.debug('Reading file');
+    this.logger.info('Starting data extraction from CSV file');
 
+    const resultGetFromFile: ResultCsvFileStructures =
+      this.extractingDataRowFromWorkbook(workBook);
+
+    this.missingParamError(resultGetFromFile);
+
+    this.logger.debug('CSV file parsed successfully');
+
+    await this.populateDataBase(resultGetFromFile);
+    return resultGetFromFile;
+  }
+
+  extractingDataRowFromWorkbook(
+    workBook: ExcelJS.Workbook,
+  ): ResultCsvFileStructures {
     const resultGetFromFile: ResultCsvFileStructures = [];
-    this.logger.debug('Starting data extraction from CSV file');
 
     workBook.getWorksheet().eachRow((row, _) => {
       if (row.number !== 1) {
@@ -112,13 +127,14 @@ export class PopulateDatabaseService implements OnModuleInit {
       }
     });
 
-    this.logger.debug('CSV file parsed successfully');
-
-    await this.populateDataBase(resultGetFromFile);
-
-    this.logger.debug('Database populated successfully');
-
     return resultGetFromFile;
+  }
+
+  convertStringsWithSeparatorToArray(input: string): string[] {
+    return input
+      .split(/,\s*|and\s+/)
+      .map((item) => item.trim())
+      .filter((item) => item !== '');
   }
 
   handleCell(row: ExcelJS.Row): ResultCsvFileStructure {
@@ -144,21 +160,28 @@ export class PopulateDatabaseService implements OnModuleInit {
           break;
       }
     });
-    this.missingParamError(csvResponse);
     return csvResponse;
   }
 
-  private initEmptyCsvFile(): ResultCsvFileStructure {
-    return {
-      year: Infinity,
-      title: undefined,
-      studios: undefined,
-      producers: undefined,
-      winner: 'no',
-    };
+  missingParamError(resultCsvFileStructures: ResultCsvFileStructures) {
+    resultCsvFileStructures.forEach((resultCsvFileStructure) => {
+      if (this.checkForMissingParam(resultCsvFileStructure)) {
+        this.throwMissingParamException();
+      }
+    });
   }
 
-  missingParamError(resultCsvFileStructure: ResultCsvFileStructure) {
+  throwMissingParamException(): void {
+    this.logger.error('Missing parameters in the CSV file or invalid CSV file');
+    throw new HttpException(
+      'Missing parameters in the CSV file or invalid csv file',
+      HttpStatus.UNPROCESSABLE_ENTITY,
+    );
+  }
+
+  checkForMissingParam(
+    resultCsvFileStructure: ResultCsvFileStructure,
+  ): boolean {
     if (
       !resultCsvFileStructure.year ||
       resultCsvFileStructure.year === Infinity ||
@@ -167,11 +190,14 @@ export class PopulateDatabaseService implements OnModuleInit {
       !resultCsvFileStructure.producers ||
       !resultCsvFileStructure.winner
     ) {
-      throw new HttpException(
-        'Missing parameters in the CSV file or invalid csv file',
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      );
+      return true;
     }
+    return false;
+  }
+
+  async hasData(): Promise<boolean> {
+    const count = await this.movieService.count();
+    return count > 0;
   }
 
   async wipeDataBase(): Promise<string> {
@@ -183,5 +209,15 @@ export class PopulateDatabaseService implements OnModuleInit {
     } catch (error) {
       console.error(error);
     }
+  }
+
+  private initEmptyCsvFile(): ResultCsvFileStructure {
+    return {
+      year: Infinity,
+      title: undefined,
+      studios: undefined,
+      producers: undefined,
+      winner: 'no',
+    };
   }
 }

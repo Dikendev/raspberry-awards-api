@@ -1,46 +1,53 @@
-import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { ParserRepository } from './repository/parser-repository';
 import { Readable } from 'stream';
 import { LoggerKey, Logger } from '../logger/domain/logger.repository';
 import { _CSV_OPTIONS } from './constants/option.constant';
 import * as ExcelJS from 'exceljs';
-import path from 'path';
 
 @Injectable()
 export class ExcelJsService implements ParserRepository {
-  fileResult: any;
-  workBook: ExcelJS.Workbook;
-
-  constructor(@Inject(LoggerKey) private logger: Logger) {
-    this.initModuleConfig();
-  }
-
-  initModuleConfig() {
-    this.workBook = new ExcelJS.Workbook();
-    this.fileResult = undefined;
-  }
+  constructor(@Inject(LoggerKey) private logger: Logger) {}
 
   async read(file: Express.Multer.File): Promise<ExcelJS.Workbook> {
-    try {
-      this.logger.info('Reading file');
-      const stream = this.bufferToStream(file.buffer);
-      await this.workBook.csv.read(stream, this.setCsvOptions());
+    const workBook = new ExcelJS.Workbook();
+    if (file === undefined) {
+      this.logger.error('File not found');
+      throw new HttpException('File not found', HttpStatus.NOT_FOUND);
+    }
 
-      return this.workBook;
+    this.logger.info('Reading CSV file');
+
+    try {
+      const stream = this.bufferToStream(file.buffer);
+      await workBook.csv.read(stream, this.setCsvOptions());
+      this.logger.info('File read successfully');
+      return workBook;
     } catch (error) {
-      this.logger.error('Error reading file', error);
+      this.logger.error('Error reading file', { error });
+      throw new HttpException(
+        'Error reading file',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
   async readLocal(): Promise<ExcelJS.Workbook> {
-    try {
-      this.logger.info('Reading file');
-      const fileLocal = 'src/public/movielist.csv';
-      await this.workBook.csv.readFile(fileLocal, this.setCsvOptions());
+    const workBook = new ExcelJS.Workbook();
 
-      return this.workBook;
+    this.logger.info('Reading local CSV file');
+    const fileLocal = 'src/public/movielist.csv';
+
+    try {
+      await workBook.csv.readFile(fileLocal, this.setCsvOptions());
+      this.logger.info('File read successfully');
+      return workBook;
     } catch (error) {
       this.logger.error('Error reading file', error);
+      throw new HttpException(
+        'Error reading file',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
